@@ -1,13 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+
+import Basic from "./layout/Basic.js";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <BrowserRouter>
+      <Switch>
+        <Route extact path="/" render={(props) => <Basic {...props} />} />        
+        <Redirect from="/" to="/index" />
+      </Switch>
+    </BrowserRouter>,      
   document.getElementById('root')
 );
 
