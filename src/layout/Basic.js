@@ -3,6 +3,7 @@ import { Route, Switch } from "react-router-dom";
 
 import Footer from "../components/Footers/Footer.js";
 import Header from "../components/Headers/Header.js";
+import Welcome from "../views/Welcome.js"
 import FeedList from "../views/FeedList.js"
 import FeedView from "../views/FeedView.js"
 import FeedRegister from "../views/FeedRegister.js"
@@ -15,6 +16,7 @@ const Basic = (props) => {
       <Header/> 
         <div>
             <Switch>                
+                <Route exact path="/" component= {Welcome} />        
                 <Route path="/view" component= {FeedView} />        
                 <Route path="/list" component= {FeedList} />                        
                 <Route path="/regist" component= {FeedRegister} />        
