@@ -4,9 +4,9 @@ import { Route, Switch } from "react-router-dom";
 import Footer from "../components/Footers/Footer.js";
 import Header from "../components/Headers/Header.js";
 import Welcome from "../views/Welcome.js"
-import FeedList from "../views/FeedList.js"
-import FeedView from "../views/FeedView.js"
-import FeedRegister from "../views/FeedRegister.js"
+import ArticleList from "../views/ArticleList.js"
+import ArticleView from "../views/ArticleView.js"
+import ArticleRegister from "../views/ArticleRegister.js"
 
 
 const Basic = (props) => {
@@ -17,9 +17,9 @@ const Basic = (props) => {
         <div>
             <Switch>                
                 <Route exact path="/" component= {Welcome} />        
-                <Route path="/view" component= {FeedView} />        
-                <Route path="/list" component= {FeedList} />                        
-                <Route path="/regist" component= {FeedRegister} />        
+                <Route path="/view" component= {ArticleView} />        
+                <Route path="/list" component= {ArticleList} />                        
+                <Route path="/regist" component= {ArticleRegister} />        
             </Switch>             
         </div>        
       <Footer/>        

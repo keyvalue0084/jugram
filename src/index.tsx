@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
 
 import Basic from "./layout/Basic.js";
@@ -9,7 +8,7 @@ import reportWebVitals from './reportWebVitals';
 ReactDOM.render(
   <BrowserRouter>
       <Switch>
-        <Route extact path="/" render={(props) => <Basic {...props} />} />        
+        <Route  path="/" render={(props) => <Basic {...props} />} />        
         <Redirect from="/" to="/index" />
       </Switch>
     </BrowserRouter>,      

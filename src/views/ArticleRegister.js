@@ -1,5 +1,5 @@
 
-const FeedRegister = () => {
+const ArticleRegister = () => {
     return (
       <>
         <div>
@@ -9,5 +9,5 @@ const FeedRegister = () => {
     );
   };
   
-  export default FeedRegister;
+  export default ArticleRegister;
   

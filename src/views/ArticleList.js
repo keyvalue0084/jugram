@@ -8,7 +8,7 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-const FeedList = () => {
+const ArticleList = () => {
     return (
       <Box pl={30} pr={30} pt={10} style={{maxHeight: '80vh', overflow: 'auto'}}>
         <Card sx={{ maxWidth: 1300, mb:2}}>
@@ -58,5 +58,5 @@ const FeedList = () => {
     );
   };
   
-  export default FeedList;
+  export default ArticleList;
   

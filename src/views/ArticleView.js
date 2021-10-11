@@ -1,5 +1,5 @@
 
-const FeedView = () => {
+const ArticleView = () => {
     return (
       <>
         <div>
@@ -9,5 +9,5 @@ const FeedView = () => {
     );
   };
   
-  export default FeedView;
+  export default ArticleView;
   
