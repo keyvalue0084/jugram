@@ -32,7 +32,7 @@ const Header = () => {
         <IconButton edge="end" aria-label="message" sx={{ mr: 1 }}>
           <SendIcon />
         </IconButton>
-        <IconButton edge="end" aria-label="AccountBox">
+        <IconButton edge="end" aria-label="AccountBox" href="/entry/signin">
           <AccountCircleIcon />
         </IconButton>
       </Toolbar>

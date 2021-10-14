@@ -8,7 +8,7 @@ import ArticleList from "../views/ArticleList";
 import ArticleView from "../views/ArticleView";
 import ArticleRegister from "../views/ArticleRegister";
 
-const Basic = () => {
+const BasicLayout = () => {
   return (
     <>
       <Header />
@@ -25,4 +25,4 @@ const Basic = () => {
   );
 };
 
-export default Basic;
+export default BasicLayout;

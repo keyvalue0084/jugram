@@ -9,7 +9,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 
-const Footer = () => {
+const EntryFooter = () => {
   return (
     <Box
       position="fixed"
@@ -35,4 +35,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default EntryFooter;
