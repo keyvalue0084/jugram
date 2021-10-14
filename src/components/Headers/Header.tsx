@@ -1,4 +1,4 @@
-import AppBar from '@mui/material/AppBar';
+import React  from 'react';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -13,7 +13,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 const Header = () => {
   return (
     <Box position="fixed" sx={{  border: '1px dashed grey', background:"white", width:"98vw"}} >
-       <Toolbar variant="dense" background="white" >
+       <Toolbar variant="dense">
           <IconButton edge="start" aria-label="menu" sx={{ mr: 2 }}>
             <MenuIcon />
           </IconButton>

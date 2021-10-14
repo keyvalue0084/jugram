@@ -1,4 +1,4 @@
-
+import React  from 'react';
 import Box from '@mui/material/Box';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
@@ -13,11 +13,11 @@ const Footer = () => {
   return (
     <Box  position="fixed" sx={{bottom: 20,border: '1px dashed grey', background:"white", width:"98vw"}}>
       <BottomNavigation>
-        <BottomNavigationAction label="Home" showLabel="true" icon={<HomeIcon />} />
-        <BottomNavigationAction label="Search" showLabel="true" icon={<SearchIcon />} />
-        <BottomNavigationAction label="Play" showLabel="true" icon={<PlayCircleOutlineIcon />} />
-        <BottomNavigationAction label="Map" showLabel="true" icon={<LocationOnIcon />} />
-        <BottomNavigationAction label="Shop" showLabel="true" icon={<LocalMallIcon />} />
+        <BottomNavigationAction label="Home"  icon={<HomeIcon />} />
+        <BottomNavigationAction label="Search"  icon={<SearchIcon />} />
+        <BottomNavigationAction label="Play"  icon={<PlayCircleOutlineIcon />} />
+        <BottomNavigationAction label="Map"  icon={<LocationOnIcon />} />
+        <BottomNavigationAction label="Shop"  icon={<LocalMallIcon />} />
       </BottomNavigation>
     </Box>
   );

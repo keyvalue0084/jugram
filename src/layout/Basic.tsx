@@ -1,16 +1,15 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 
-import Footer from "../components/Footers/Footer.js";
-import Header from "../components/Headers/Header.js";
-import Welcome from "../views/Welcome.js"
-import ArticleList from "../views/ArticleList.js"
-import ArticleView from "../views/ArticleView.js"
-import ArticleRegister from "../views/ArticleRegister.js"
+import Footer from "../components/Footers/Footer";
+import Header from "../components/Headers/Header";
+import Welcome from "../views/Welcome"
+import ArticleList from "../views/ArticleList"
+import ArticleView from "../views/ArticleView"
+import ArticleRegister from "../views/ArticleRegister"
 
 
-const Basic = (props) => {
-
+const Basic = () => {
   return (
     <>
       <Header/> 
