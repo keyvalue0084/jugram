@@ -20,10 +20,14 @@ function SignIn(props: Props) {
 
   return (
     <Box
-      pl={30}
-      pr={30}
+      pl={"30%"}
+      pr={"30%"}
       pt={30}
-      style={{ minHeight: "70vh", overflow: "auto" }}
+      style={{
+        minHeight: "70vh",
+        overflow: "auto",
+        maxWidth: "500px"
+      }}
     >
       <Typography gutterBottom variant="h4" align="center">
         Sign in to JUGRAM!
