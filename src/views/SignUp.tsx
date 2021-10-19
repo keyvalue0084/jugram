@@ -9,8 +9,7 @@ import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
 import { createStyles, withStyles, WithStyles } from "@mui/styles";
 
-import { checkId, addUser } from "../hooks/Users";
-import { userInfo } from "os";
+import { checkId, addUser, User } from "../hooks/Users";
 
 const styles = createStyles({
   button: {
@@ -19,12 +18,6 @@ const styles = createStyles({
 });
 
 export interface Props extends WithStyles<typeof styles> {}
-export interface User {
-  id: string;
-  password: string;
-  passwordConfirm: string;
-  passwordOk: boolean;
-}
 
 function SignUp(props: Props) {
   const { classes } = props;
@@ -32,13 +25,23 @@ function SignUp(props: Props) {
     id: "",
     password: "",
     passwordConfirm: "",
-    passwordOk: true
+    passwordOk: true,
+    username: "",
+    email: "",
+    provider: undefined,
+    resetPasswordToken: undefined,
+    confirmationToken: undefined,
+    confirmed: false,
+    blocked: false,
+    role: undefined,
+    created_by: undefined,
+    updated_by: undefined
   });
 
   const doSignUp = () => {
-    console.log(User.id, User.password);
-    comparePassword();
-    //addUser(User.id, User.password);
+    if (comparePassword()) {
+      addUser(User);
+    }
   };
 
   //비밀번호 확인 비교
@@ -48,11 +51,15 @@ function SignUp(props: Props) {
         ...User,
         passwordOk: true
       });
+
+      return true;
     } else {
       setUser({
         ...User,
         passwordOk: false
       });
+
+      return false;
     }
   };
 
@@ -63,8 +70,6 @@ function SignUp(props: Props) {
       ...User,
       [name]: value
     });
-
-    console.log(User);
   };
 
   return (
@@ -90,7 +95,7 @@ function SignUp(props: Props) {
       <Divider />
       <TextField
         id="id-textfield"
-        name="id"
+        name="ID"
         label="ID"
         placeholder="ENTER YOUR ID"
         fullWidth
@@ -123,6 +128,28 @@ function SignUp(props: Props) {
         onChange={onChange}
         error={User.passwordOk === true ? false : true}
         helperText={User.passwordOk === true ? "" : "Confirm your password"}
+      />
+      <TextField
+        id="id-textfield"
+        name="username"
+        label="USER NAME"
+        placeholder="ENTER YOUR NAME"
+        fullWidth
+        margin="normal"
+        variant="outlined"
+        defaultValue={User.username}
+        onChange={onChange}
+      />
+      <TextField
+        id="email-textfield"
+        name="email"
+        label="EMAIL"
+        placeholder="ENTER YOUR E-MAIL"
+        fullWidth
+        margin="normal"
+        variant="outlined"
+        defaultValue={User.email}
+        onChange={onChange}
       />
       <Box textAlign="center">
         <Button
