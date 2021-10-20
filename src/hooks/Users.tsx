@@ -1,21 +1,8 @@
+import qs from "qs";
 import axios from "axios";
 
-export interface User {
-  id: string;
-  username: string;
-  password: string;
-  passwordConfirm: string;
-  passwordOk: boolean;
-  email: string;
-  provider?: string;
-  resetPasswordToken?: string;
-  confirmationToken?: string;
-  confirmed: false;
-  blocked: false;
-  role?: string;
-  created_by?: string;
-  updated_by?: string;
-}
+export type NewUser = Components.Schemas.NewUsersPermissionsUser;
+export type User = Components.Schemas.UsersPermissionsUser;
 
 // 아이디 체크
 export const checkId = (user: User) => {
@@ -37,24 +24,25 @@ export const checkId = (user: User) => {
 };
 
 // 사용자 추가
-export const addUser = (user: User) => {
+export const addUser = (newUser: NewUser, callback: () => void) => {
   axios
     .post("https://jsbackend.herokuapp.com/auth/local/register", {
-      username: user.username,
-      email: user.email,
-      provider: user.provider,
-      password: user.password,
-      resetPasswordToken: user.resetPasswordToken,
-      confirmationToken: user.confirmationToken,
-      confirmed: user.confirmed,
-      blocked: user.blocked,
-      role: user.role,
-      created_by: user.created_by,
-      updated_by: user.updated_by
+      username: newUser.username,
+      email: newUser.email,
+      provider: newUser.provider,
+      password: newUser.password,
+      resetPasswordToken: newUser.resetPasswordToken,
+      confirmationToken: newUser.confirmationToken,
+      confirmed: newUser.confirmed,
+      blocked: newUser.blocked,
+      role: newUser.role,
+      created_by: newUser.created_by,
+      updated_by: newUser.updated_by
     })
     .then(function (response) {
       // response
       console.log(response);
+      callback();
     })
     .catch(function (error) {
       // 오류발생시 실행
@@ -82,12 +70,17 @@ export const getUser = (user: User) => {
     });
 };
 
-// 사용자 정보 가져오기
-export const login = (user: User) => {
+// 로그인하기
+export const login = (user: NewUser) => {
+  var params = new FormData();
+  params.append("identifier", user.email);
+  if (!!user.password) {
+    params.append("password", user.password);
+  }
+
   axios
-    .post("https://jsbackend.herokuapp.com/auth/local/", {
-      email: user.email,
-      password: user.password
+    .post("https://jsbackend.herokuapp.com/auth/local", params, {
+      headers: { "Content-type": "application/x-www-form-urlencoded" }
     })
     .then(function (response) {
       // response

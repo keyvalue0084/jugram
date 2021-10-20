@@ -7,9 +7,9 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
-import { createStyles, withStyles, WithStyles } from "@mui/styles";
 
-import { login, User } from "../hooks/Users";
+import { createStyles, withStyles, WithStyles } from "@mui/styles";
+import { login, NewUser } from "../hooks/Users";
 
 const styles = createStyles({
   button: {
@@ -22,14 +22,11 @@ export interface Props extends WithStyles<typeof styles> {}
 function SignIn(props: Props) {
   const { classes } = props;
 
-  const [User, setUser] = useState<User>({
-    id: "",
+  const [newUser, setUser] = useState<NewUser>({
     password: "",
-    passwordConfirm: "",
-    passwordOk: true,
     username: "",
     email: "",
-    provider: undefined,
+    provider: "email",
     resetPasswordToken: undefined,
     confirmationToken: undefined,
     confirmed: false,
@@ -40,14 +37,14 @@ function SignIn(props: Props) {
   });
 
   const doSignIn = () => {
-    login(User);
+    login(newUser);
   };
 
   //입력값 state 관리
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUser({
-      ...User,
+      ...newUser,
       [name]: value
     });
   };
@@ -67,50 +64,67 @@ function SignIn(props: Props) {
         Sign in to JUGRAM!
       </Typography>
       <Divider />
-      <TextField
-        id="outlined-uncontrolled"
-        label="EMAIL"
-        name="email"
-        placeholder="ENTER YOUR ID"
-        fullWidth
-        margin="normal"
-        variant="outlined"
-        defaultValue={User.email}
-        onChange={onChange}
-      />
-      <TextField
-        id="outlined-uncontrolled"
-        label="PASSWORD"
-        name="password"
-        placeholder="ENTER YOUR PASSWORD"
-        fullWidth
-        type="password"
-        margin="normal"
-        variant="outlined"
-        defaultValue={User.password}
-        onChange={onChange}
-      />
-      <Box textAlign="center">
-        <Button
+      <form>
+        <TextField
+          id="outlined-uncontrolled"
+          label="USER NAME"
+          name="username"
+          placeholder="ENTER YOUR NAME"
+          fullWidth
+          margin="normal"
           variant="outlined"
-          className={classes.button}
-          color="primary"
-          onClick={doSignIn}
-        >
-          SIGN IN
-        </Button>
-        <Button
+          defaultValue={newUser.username}
+          onChange={onChange}
+        />
+        <TextField
+          id="outlined-uncontrolled"
+          label="EMAIL"
+          name="email"
+          placeholder="ENTER YOUR ID"
+          fullWidth
+          margin="normal"
           variant="outlined"
-          className={classes.button}
-          color="success"
-          href="/entry/signup"
-        >
-          SIGN UP
-        </Button>
-        <Button variant="outlined" className={classes.button} color="secondary">
-          CANCEL
-        </Button>
-      </Box>
+          defaultValue={newUser.email}
+          onChange={onChange}
+        />
+        <TextField
+          id="outlined-uncontrolled"
+          label="PASSWORD"
+          name="password"
+          placeholder="ENTER YOUR PASSWORD"
+          fullWidth
+          type="password"
+          margin="normal"
+          variant="outlined"
+          defaultValue={newUser.password}
+          onChange={onChange}
+        />
+        <Box textAlign="center">
+          <Button
+            variant="outlined"
+            className={classes.button}
+            color="primary"
+            onClick={doSignIn}
+          >
+            SIGN IN
+          </Button>
+          <Button
+            variant="outlined"
+            className={classes.button}
+            color="success"
+            href="/entry/signup"
+          >
+            SIGN UP
+          </Button>
+          <Button
+            variant="outlined"
+            className={classes.button}
+            color="secondary"
+          >
+            CANCEL
+          </Button>
+        </Box>
+      </form>
     </Box>
   );
 }

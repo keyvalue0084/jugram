@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom"
 
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
@@ -6,10 +7,21 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Divider from "@mui/material/Divider";
-import Button from "@mui/material/Button";
-import { createStyles, withStyles, WithStyles } from "@mui/styles";
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
-import { checkId, addUser, User } from "../hooks/Users";
+import { createStyles, withStyles, WithStyles } from "@mui/styles";
+import { checkId, addUser, NewUser } from "../hooks/Users";
+
+
+interface Valid  {
+  passwordConfirm?:string;
+  passwordOk: boolean;
+}
 
 const styles = createStyles({
   button: {
@@ -21,11 +33,15 @@ export interface Props extends WithStyles<typeof styles> {}
 
 function SignUp(props: Props) {
   const { classes } = props;
-  const [User, setUser] = useState<User>({
-    id: "",
-    password: "",
-    passwordConfirm: "",
-    passwordOk: true,
+  const history = useHistory()
+  const [open, setOpen] = React.useState(false);
+  const [valid,setValid] = useState<Valid>({
+      passwordConfirm:undefined,
+      passwordOk:true      
+  })
+
+  const [newUser, setUser] = useState<NewUser>({    
+    password: undefined,        
     username: "",
     email: "",
     provider: undefined,
@@ -40,22 +56,22 @@ function SignUp(props: Props) {
 
   const doSignUp = () => {
     if (comparePassword()) {
-      addUser(User);
+      addUser(newUser,()=>setOpen(true));
     }
   };
 
   //비밀번호 확인 비교
-  const comparePassword = () => {
-    if (User.password === User.passwordConfirm) {
-      setUser({
-        ...User,
+  const comparePassword = () => {    
+    if (newUser.password === valid.passwordConfirm) {
+      setValid({
+        ...valid,
         passwordOk: true
       });
 
       return true;
     } else {
-      setUser({
-        ...User,
+      setValid({
+        ...valid,
         passwordOk: false
       });
 
@@ -67,10 +83,24 @@ function SignUp(props: Props) {
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUser({
-      ...User,
+      ...newUser,
       [name]: value
     });
+    
   };
+
+  const onChangePasswordConfirm  = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setValid({
+      ...valid,
+      [name]: value
+    });    
+  };
+
+  const done = () =>{
+    setOpen(false);
+    history.push('/');
+  }
 
   return (
     <Box
@@ -95,13 +125,13 @@ function SignUp(props: Props) {
       <Divider />
       <TextField
         id="id-textfield"
-        name="ID"
-        label="ID"
-        placeholder="ENTER YOUR ID"
+        name="email"
+        label="EMAIL"
+        placeholder="ENTER YOUR EMAIL"
         fullWidth
         margin="normal"
         variant="outlined"
-        defaultValue={User.id}
+        defaultValue={newUser.email}
         onChange={onChange}
       />
       <TextField
@@ -113,6 +143,7 @@ function SignUp(props: Props) {
         type="password"
         margin="normal"
         variant="outlined"
+        defaultValue={newUser.password}
         onChange={onChange}
       />
       <TextField
@@ -124,10 +155,10 @@ function SignUp(props: Props) {
         type="password"
         margin="normal"
         variant="outlined"
-        defaultValue={User.password}
-        onChange={onChange}
-        error={User.passwordOk === true ? false : true}
-        helperText={User.passwordOk === true ? "" : "Confirm your password"}
+        defaultValue={valid.passwordConfirm}
+        onChange={onChangePasswordConfirm}
+        error={valid.passwordOk === true ? false : true}
+        helperText={valid.passwordOk === true ? "" : "Confirm your password"}
       />
       <TextField
         id="id-textfield"
@@ -137,20 +168,9 @@ function SignUp(props: Props) {
         fullWidth
         margin="normal"
         variant="outlined"
-        defaultValue={User.username}
+        defaultValue={newUser.username}
         onChange={onChange}
-      />
-      <TextField
-        id="email-textfield"
-        name="email"
-        label="EMAIL"
-        placeholder="ENTER YOUR E-MAIL"
-        fullWidth
-        margin="normal"
-        variant="outlined"
-        defaultValue={User.email}
-        onChange={onChange}
-      />
+      />      
       <Box textAlign="center">
         <Button
           variant="outlined"
@@ -164,6 +184,24 @@ function SignUp(props: Props) {
           CANCEL
         </Button>
       </Box>
+
+      <Dialog
+        open={open}        
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"You are Member"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Membership registration has been completed successfully!!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={done}>Confirm</Button>          
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
