@@ -1,4 +1,3 @@
-import qs from "qs";
 import axios from "axios";
 
 export type NewUser = Components.Schemas.NewUsersPermissionsUser;
