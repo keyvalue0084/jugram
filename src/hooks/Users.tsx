@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
 export type NewUser = Components.Schemas.NewUsersPermissionsUser;
 export type User = Components.Schemas.UsersPermissionsUser;
@@ -70,8 +70,11 @@ export const getUser = (user: User) => {
 };
 
 // 로그인하기
-export const login = (user: NewUser) => {
-  var params = new FormData();
+export const login = (
+  user: NewUser,
+  callback: (response: AxiosResponse) => void
+) => {
+  let params = new FormData();
   params.append("identifier", user.email);
   if (!!user.password) {
     params.append("password", user.password);
@@ -83,7 +86,32 @@ export const login = (user: NewUser) => {
     })
     .then(function (response) {
       // response
-      console.log(response);
+      callback(response);
+    })
+    .catch(function (error) {
+      // 오류발생시 실행
+      console.error(error);
+    })
+    .then(function () {
+      // 항상 실행
+    });
+};
+
+// 로그인하기
+export const getMe = (
+  jwt: string,
+  callback: (response: AxiosResponse) => void
+) => {
+  axios
+    .get("https://jsbackend.herokuapp.com/users/me", {
+      headers: {
+        "Content-type": "application/x-www-form-urlencoded",
+        Authorization: "Bearer " + jwt
+      }
+    })
+    .then(function (response) {
+      // response
+      callback(response);
     })
     .catch(function (error) {
       // 오류발생시 실행
