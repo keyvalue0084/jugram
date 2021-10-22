@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom"
+import { useHistory } from "react-router-dom";
+import { useUserState, useUserDispatch } from "../context/UserContext";
 
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
@@ -7,19 +8,18 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Divider from "@mui/material/Divider";
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 import { createStyles, withStyles, WithStyles } from "@mui/styles";
-import { checkId, addUser, NewUser } from "../hooks/Users";
+import { addUser, NewUser } from "../hooks/Users";
 
-
-interface Valid  {
-  passwordConfirm?:string;
+interface Valid {
+  passwordConfirm?: string;
   passwordOk: boolean;
 }
 
@@ -33,15 +33,16 @@ export interface Props extends WithStyles<typeof styles> {}
 
 function SignUp(props: Props) {
   const { classes } = props;
-  const history = useHistory()
-  const [open, setOpen] = React.useState(false);
-  const [valid,setValid] = useState<Valid>({
-      passwordConfirm:undefined,
-      passwordOk:true      
-  })
+  const history = useHistory();
 
-  const [newUser, setUser] = useState<NewUser>({    
-    password: undefined,        
+  const [open, setOpen] = React.useState(false);
+  const [valid, setValid] = useState<Valid>({
+    passwordConfirm: undefined,
+    passwordOk: true
+  });
+
+  const [newUser, setUser] = useState<NewUser>({
+    password: undefined,
     username: "",
     email: "",
     provider: undefined,
@@ -56,12 +57,12 @@ function SignUp(props: Props) {
 
   const doSignUp = () => {
     if (comparePassword()) {
-      addUser(newUser,()=>setOpen(true));
+      addUser(newUser, () => setOpen(true));
     }
   };
 
   //비밀번호 확인 비교
-  const comparePassword = () => {    
+  const comparePassword = () => {
     if (newUser.password === valid.passwordConfirm) {
       setValid({
         ...valid,
@@ -86,21 +87,20 @@ function SignUp(props: Props) {
       ...newUser,
       [name]: value
     });
-    
   };
 
-  const onChangePasswordConfirm  = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangePasswordConfirm = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setValid({
       ...valid,
       [name]: value
-    });    
+    });
   };
 
-  const done = () =>{
+  const done = () => {
     setOpen(false);
-    history.push('/');
-  }
+    history.push("/");
+  };
 
   return (
     <Box
@@ -170,7 +170,7 @@ function SignUp(props: Props) {
         variant="outlined"
         defaultValue={newUser.username}
         onChange={onChange}
-      />      
+      />
       <Box textAlign="center">
         <Button
           variant="outlined"
@@ -184,22 +184,19 @@ function SignUp(props: Props) {
           CANCEL
         </Button>
       </Box>
-
       <Dialog
-        open={open}        
+        open={open}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {"You are Member"}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">{"You are Member"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Membership registration has been completed successfully!!
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={done}>Confirm</Button>          
+          <Button onClick={done}>Confirm</Button>
         </DialogActions>
       </Dialog>
     </Box>

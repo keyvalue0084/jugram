@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 
-import PropTypes from "prop-types";
+import { useUserState, useUserDispatch } from "../context/UserContext";
+import PropTypes, { string } from "prop-types";
 import Box from "@mui/material/Box";
 
 import Typography from "@mui/material/Typography";
@@ -10,6 +12,7 @@ import Button from "@mui/material/Button";
 
 import { createStyles, withStyles, WithStyles } from "@mui/styles";
 import { login, NewUser } from "../hooks/Users";
+import { AxiosResponse } from "axios";
 
 const styles = createStyles({
   button: {
@@ -21,6 +24,10 @@ export interface Props extends WithStyles<typeof styles> {}
 
 function SignIn(props: Props) {
   const { classes } = props;
+
+  const history = useHistory();
+  const userState = useUserState();
+  const userDispatch = useUserDispatch();
 
   const [newUser, setUser] = useState<NewUser>({
     password: "",
@@ -37,7 +44,20 @@ function SignIn(props: Props) {
   });
 
   const doSignIn = () => {
-    login(newUser);
+    let loginCallback = (reponse: AxiosResponse) => {
+      //reponse data에 접근하기 위해서 중간객체(data)도 type을 꼭 지정해줘야하는가? 해야한다면 더 쉬운 방법은 없을까?
+      let data = reponse.data as any;
+
+      userDispatch({
+        type: "LOGIN",
+        user: data.user as NewUser,
+        jwt: data.jwt as String
+      });
+
+      history.push("/");
+    };
+
+    login(newUser, loginCallback);
   };
 
   //입력값 state 관리
@@ -64,7 +84,7 @@ function SignIn(props: Props) {
         Sign in to JUGRAM!
       </Typography>
       <Divider />
-      <form>
+      <form name="signInForm">
         <TextField
           id="outlined-uncontrolled"
           label="USER NAME"
