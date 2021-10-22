@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { useUserState, useUserDispatch } from "../context/UserContext";
 
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
@@ -55,6 +54,7 @@ function SignUp(props: Props) {
     updated_by: undefined
   });
 
+  const comparePassword = () => newUser.password === valid.passwordConfirm;
   const doSignUp = () => {
     if (comparePassword()) {
       addUser(newUser, () => setOpen(true));
@@ -62,23 +62,12 @@ function SignUp(props: Props) {
   };
 
   //비밀번호 확인 비교
-  const comparePassword = () => {
-    if (newUser.password === valid.passwordConfirm) {
-      setValid({
-        ...valid,
-        passwordOk: true
-      });
-
-      return true;
-    } else {
-      setValid({
-        ...valid,
-        passwordOk: false
-      });
-
-      return false;
-    }
-  };
+  useEffect(() => {
+    setValid({
+      ...valid,
+      passwordOk: newUser.password === valid.passwordConfirm
+    });
+  }, [newUser.password, valid.passwordConfirm]);
 
   //입력값 state 관리
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {

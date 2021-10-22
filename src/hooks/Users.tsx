@@ -80,7 +80,7 @@ export const login = (
     params.append("password", user.password);
   }
 
-  axios
+  axios: new Promise<AxiosResponse>
     .post("https://jsbackend.herokuapp.com/auth/local", params, {
       headers: { "Content-type": "application/x-www-form-urlencoded" }
     })
