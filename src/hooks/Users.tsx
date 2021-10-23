@@ -2,7 +2,13 @@ import axios, { AxiosResponse } from "axios";
 
 export type NewUser = Components.Schemas.NewUsersPermissionsUser;
 export type User = Components.Schemas.UsersPermissionsUser;
-
+interface UserAxiosData {
+  user: NewUser;
+  jwt: string;
+}
+export interface UserAxiosReponse extends AxiosResponse {
+  data: UserAxiosData;
+}
 // 아이디 체크
 export const checkId = (user: User) => {
   axios
@@ -72,7 +78,7 @@ export const getUser = (user: User) => {
 // 로그인하기
 export const login = (
   user: NewUser,
-  callback: (response: AxiosResponse) => void
+  callback: (response: UserAxiosReponse) => void
 ) => {
   let params = new FormData();
   params.append("identifier", user.email);
@@ -81,9 +87,13 @@ export const login = (
   }
 
   axios
-    .post("https://jsbackend.herokuapp.com/auth/local", params, {
-      headers: { "Content-type": "application/x-www-form-urlencoded" }
-    })
+    .post<any, UserAxiosReponse>(
+      "https://jsbackend.herokuapp.com/auth/local",
+      params,
+      {
+        headers: { "Content-type": "application/x-www-form-urlencoded" }
+      }
+    )
     .then(function (response) {
       // response
       callback(response);
@@ -100,10 +110,10 @@ export const login = (
 // 로그인하기
 export const getMe = (
   jwt: string,
-  callback: (response: AxiosResponse) => void
+  callback: (response: UserAxiosReponse) => void
 ) => {
   axios
-    .get("https://jsbackend.herokuapp.com/users/me", {
+    .get<any, UserAxiosReponse>("https://jsbackend.herokuapp.com/users/me", {
       headers: {
         "Content-type": "application/x-www-form-urlencoded",
         Authorization: "Bearer " + jwt

@@ -11,7 +11,7 @@ import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
 
 import { createStyles, withStyles, WithStyles } from "@mui/styles";
-import { login, NewUser } from "../hooks/Users";
+import { login, NewUser, UserAxiosReponse } from "../hooks/Users";
 import { AxiosResponse } from "axios";
 
 const styles = createStyles({
@@ -44,14 +44,12 @@ function SignIn(props: Props) {
   });
 
   const doSignIn = () => {
-    let loginCallback = (reponse: AxiosResponse) => {
+    let loginCallback = (reponse: UserAxiosReponse) => {
       //reponse data에 접근하기 위해서 중간객체(data)도 type을 꼭 지정해줘야하는가? 해야한다면 더 쉬운 방법은 없을까?
-      let data = reponse.data as any;
-
       userDispatch({
         type: "LOGIN",
-        user: data.user as NewUser,
-        jwt: data.jwt as String
+        user: reponse.data.user,
+        jwt: reponse.data.jwt
       });
 
       history.push("/");
