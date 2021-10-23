@@ -45,7 +45,6 @@ function SignIn(props: Props) {
 
   const doSignIn = () => {
     let loginCallback = (reponse: UserAxiosReponse) => {
-      //reponse data에 접근하기 위해서 중간객체(data)도 type을 꼭 지정해줘야하는가? 해야한다면 더 쉬운 방법은 없을까?
       userDispatch({
         type: "LOGIN",
         user: reponse.data.user,
