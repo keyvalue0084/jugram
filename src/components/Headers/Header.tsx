@@ -1,5 +1,5 @@
 import React from "react";
-import { useUserState, useUserDispatch } from "../../context/UserContext";
+import { useUserState } from "../../context/UserContext";
 
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -11,7 +11,7 @@ import AddBoxIcon from "@mui/icons-material/AddBox";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import SendIcon from "@mui/icons-material/Send";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { deepOrange, deepPurple } from "@mui/material/colors";
+import { deepOrange } from "@mui/material/colors";
 
 const Header = () => {
   const userState = useUserState();
