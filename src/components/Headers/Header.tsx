@@ -42,7 +42,9 @@ const Header = () => {
         </IconButton>
         <IconButton edge="end" aria-label="AccountBox" href="/entry/signin">
           {userState.jwt ? (
-            <Avatar sx={{ bgcolor: deepOrange[500] }}>{initialName}</Avatar>
+            <Avatar sx={{ bgcolor: deepOrange[500], height: 32, width: 32 }}>
+              {initialName}
+            </Avatar>
           ) : (
             <AccountCircleIcon />
           )}

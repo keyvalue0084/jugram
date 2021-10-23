@@ -1,11 +1,15 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import ReactDOM from "react-dom";
+import BasicLoading from "./lottie/BasicLoading";
 import { UserProvider } from "./context/UserContext";
-import App from "./views/App";
+
+const App = lazy(() => import("./views/App"));
 
 ReactDOM.render(
   <UserProvider>
-    <App />
+    <Suspense fallback={<BasicLoading />}>
+      <App />
+    </Suspense>
   </UserProvider>,
   document.getElementById("root")
 );
