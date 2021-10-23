@@ -6,10 +6,10 @@ import { UserProvider } from "./context/UserContext";
 const App = lazy(() => import("./views/App"));
 
 ReactDOM.render(
-  <UserProvider>
-    <Suspense fallback={<BasicLoading />}>
+  <Suspense fallback={<BasicLoading />}>
+    <UserProvider>
       <App />
-    </Suspense>
-  </UserProvider>,
+    </UserProvider>
+  </Suspense>,
   document.getElementById("root")
 );

@@ -1,7 +1,7 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import BasicLoading from "../lottie/BasicLoading";
+import HeadLoading from "../lottie/HeadLoading";
 
 const Welcom = () => {
   return (
@@ -31,6 +31,7 @@ const Welcom = () => {
       <Typography variant="button" display="block" gutterBottom>
         Develope by KEYVALUE
       </Typography>
+      <HeadLoading />
     </Box>
   );
 };
