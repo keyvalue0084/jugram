@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useUserState } from "../context/UserContext";
+import { getArticles } from "../hooks/Articles";
 
 import Box from "@mui/material/Box";
-
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -10,6 +11,18 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
 const ArticleList = () => {
+  const userState = useUserState();
+  let [articles, setArticles] = useState([]);
+
+  useEffect(() => {
+    console.log(userState);
+    if (userState.jwt) {
+      getArticles(userState.jwt).then(response => {
+        console.log(response);
+      });
+    }
+  }, []);
+
   return (
     <Box
       pl={30}

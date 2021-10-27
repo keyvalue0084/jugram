@@ -1,31 +1,24 @@
 import React, { Suspense, useEffect, lazy } from "react";
-
 import BasicLayout from "../layout/BasicLayout";
 import EntryLayout from "../layout/EntryLayout";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import { getMe, NewUser } from "../hooks/Users";
-import { useUserState, useUserDispatch } from "../context/UserContext";
-import { AxiosResponse } from "axios";
+import { getMe } from "../hooks/Users";
+import { useUserDispatch } from "../context/UserContext";
 import HeadLoading from "../lottie/HeadLoading";
 
 const App = () => {
-  const userState = useUserState();
   const userDispatch = useUserDispatch();
+  const jwt = sessionStorage.getItem("jwt");
 
-  useEffect(() => {
-    if (!!sessionStorage.getItem("jwt")) {
-      let getMeCallback = (reponse: AxiosResponse) => {
-        let data = reponse.data as any;
-        userDispatch({
-          type: "LOGIN",
-          user: data,
-          jwt: sessionStorage.getItem("jwt") as String
-        });
-      };
-
-      getMe(sessionStorage.getItem("jwt") as string, getMeCallback);
-    }
-  }, []);
+  if (jwt) {
+    getMe(jwt).then(response => {
+      userDispatch({
+        type: "LOGIN",
+        user: response.data.user,
+        jwt: jwt
+      });
+    });
+  }
 
   return (
     <BrowserRouter>

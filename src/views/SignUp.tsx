@@ -57,7 +57,9 @@ function SignUp(props: Props) {
 
   const doSignUp = () => {
     if (comparePassword()) {
-      addUser(newUser, () => setOpen(true));
+      addUser(newUser).then(response => {
+        setOpen(true);
+      });
     }
   };
 

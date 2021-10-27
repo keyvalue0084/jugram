@@ -12,7 +12,8 @@ import Button from "@mui/material/Button";
 
 import { createStyles, withStyles, WithStyles } from "@mui/styles";
 import { login, NewUser, UserResponse } from "../hooks/Users";
-
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const styles = createStyles({
   button: {
     margin: 10
@@ -42,20 +43,29 @@ function SignIn(props: Props) {
   });
 
   const doSignIn = () => {
-    let loginCallback = (reponse: UserResponse) => {
-      //reponse data에 접근하기 위해서 중간객체(data)도 type을 꼭 지정해줘야하는가? 해야한다면 더 쉬운 방법은 없을까?
-      let data = reponse.data;
+    console.log("ee");
 
-      userDispatch({
-        type: "LOGIN",
-        user: reponse.data.user,
-        jwt: reponse.data.jwt
+    login(newUser)
+      .then(response => {
+        toast.success("로그인 성공!", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 1500,
+          onClose: () => {
+            userDispatch({
+              type: "LOGIN",
+              user: response.data.user,
+              jwt: response.data.jwt
+            });
+            history.push("/");
+          }
+        });
+      })
+      .catch(response => {
+        toast.error("로그인 실패!", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 1500
+        });
       });
-
-      history.push("/");
-    };
-
-    login(newUser, loginCallback);
   };
 
   //입력값 state 관리
@@ -78,22 +88,12 @@ function SignIn(props: Props) {
         maxWidth: "500px"
       }}
     >
+      <ToastContainer />
       <Typography gutterBottom variant="h4" align="center">
         Sign in to JUGRAM!
       </Typography>
       <Divider />
       <form name="signInForm">
-        <TextField
-          id="username-outlined-uncontrolled"
-          label="USER NAME"
-          name="username"
-          placeholder="ENTER YOUR NAME"
-          fullWidth
-          margin="normal"
-          variant="outlined"
-          defaultValue={newUser.username}
-          onChange={onChange}
-        />
         <TextField
           id="email-outlined-uncontrolled"
           label="EMAIL"

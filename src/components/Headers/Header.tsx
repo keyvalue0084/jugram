@@ -41,15 +41,18 @@ const Header = () => {
         <IconButton edge="end" aria-label="message" sx={{ mr: 1 }}>
           <SendIcon />
         </IconButton>
-        <IconButton edge="end" aria-label="AccountBox" href="/entry/signin">
-          {userState.jwt ? (
+
+        {userState.jwt ? (
+          <IconButton edge="end" aria-label="AccountBox" href="/">
             <Avatar sx={{ bgcolor: deepOrange[500], height: 32, width: 32 }}>
               {initialName}
             </Avatar>
-          ) : (
+          </IconButton>
+        ) : (
+          <IconButton edge="end" aria-label="AccountBox" href="/entry/signin">
             <AccountCircleIcon />
-          )}
-        </IconButton>
+          </IconButton>
+        )}
       </Toolbar>
     </Box>
   );

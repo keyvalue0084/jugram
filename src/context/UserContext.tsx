@@ -5,14 +5,14 @@ type UserState = Components.Schemas.NewUsersPermissionsUser;
 
 // 상태를 위한 타입
 interface State {
-  jwt?: String;
+  jwt?: string;
   user?: UserState;
 }
 
 // 모든 액션들을 위한 타입
 type Action =
-  | { type: "LOGIN"; user: UserState; jwt: String }
-  | { type: "LOGOUT"; user: UserState; jwt: String };
+  | { type: "LOGIN"; user: UserState; jwt: string }
+  | { type: "LOGOUT"; user: UserState; jwt: string };
 
 type UserDispatch = Dispatch<Action>;
 
@@ -30,7 +30,7 @@ function reducer(state: State, action: Action): State {
   switch (action.type) {
     case "LOGIN":
       if (!sessionStorage.getItem("jwt")) {
-        sessionStorage.setItem("jwt", action.jwt as string);
+        sessionStorage.setItem("jwt", action.jwt);
       }
       return {
         jwt: action.jwt,
@@ -62,12 +62,12 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 // state 와 dispatch 를 쉽게 사용하기 위한 커스텀 Hooks
 export function useUserState() {
   const state = useContext(UserStateContext);
-  if (!state) throw new Error("Cannot find SampleProvider"); // 유효하지 않을땐 에러를 발생
+  if (!state) throw new Error("Cannot find UserState"); // 유효하지 않을땐 에러를 발생
   return state;
 }
 
 export function useUserDispatch() {
   const dispatch = useContext(UserDispatchContext);
-  if (!dispatch) throw new Error("Cannot find SampleProvider"); // 유효하지 않을땐 에러를 발생
+  if (!dispatch) throw new Error("Cannot find UserDispatch"); // 유효하지 않을땐 에러를 발생
   return dispatch;
 }
