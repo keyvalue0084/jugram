@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { Route, Switch } from "react-router-dom";
 
 import Footer from "../components/Footers/Footer";
@@ -12,14 +12,12 @@ const BasicLayout = () => {
   return (
     <>
       <Header />
-      <div>
-        <Switch>
-          <Route exact path="/" component={Welcome} />
-          <Route path="/view" component={ArticleView} />
-          <Route path="/list" component={ArticleList} />
-          <Route path="/regist" component={ArticleRegister} />
-        </Switch>
-      </div>
+      <Switch>
+        <Route exact path="/" component={Welcome} />
+        <Route path="/view" component={ArticleView} />
+        <Route path="/list" component={ArticleList} />
+        <Route path="/regist" component={ArticleRegister} />
+      </Switch>
       <Footer />
     </>
   );

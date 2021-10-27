@@ -1,5 +1,5 @@
 import React from "react";
-import { useUserState, useUserDispatch } from "../../context/UserContext";
+import { useUserState } from "../../context/UserContext";
 
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -11,7 +11,7 @@ import AddBoxIcon from "@mui/icons-material/AddBox";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import SendIcon from "@mui/icons-material/Send";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { deepOrange, deepPurple } from "@mui/material/colors";
+import { deepOrange } from "@mui/material/colors";
 
 const Header = () => {
   const userState = useUserState();
@@ -41,15 +41,15 @@ const Header = () => {
         <IconButton edge="end" aria-label="message" sx={{ mr: 1 }}>
           <SendIcon />
         </IconButton>
-        {userState.jwt ? (
-          <IconButton edge="end" aria-label="AccountBox" href="/entry/signin">
-            <Avatar sx={{ bgcolor: deepOrange[500] }}>{initialName}</Avatar>
-          </IconButton>
-        ) : (
-          <IconButton edge="end" aria-label="AccountBox" href="/entry/signin">
+        <IconButton edge="end" aria-label="AccountBox" href="/entry/signin">
+          {userState.jwt ? (
+            <Avatar sx={{ bgcolor: deepOrange[500], height: 32, width: 32 }}>
+              {initialName}
+            </Avatar>
+          ) : (
             <AccountCircleIcon />
-          </IconButton>
-        )}
+          )}
+        </IconButton>
       </Toolbar>
     </Box>
   );
