@@ -16,9 +16,10 @@ import { deepOrange, deepPurple } from "@mui/material/colors";
 const Header = () => {
   const userState = useUserState();
   let initialName = null;
-  if (!!userState.user) {
-    initialName = userState.user.username.substring(0, 1) as String;
+  if (userState.user) {
+    initialName = userState.user.username.substring(0, 1);
   }
+
   return (
     <Box
       position="fixed"

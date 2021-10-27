@@ -33,14 +33,12 @@ function reducer(state: State, action: Action): State {
         sessionStorage.setItem("jwt", action.jwt as string);
       }
       return {
-        ...state,
         jwt: action.jwt,
         user: action.user
       };
     case "LOGOUT":
       sessionStorage.removeItem("jwt");
       return {
-        ...state,
         jwt: undefined,
         user: undefined
       };

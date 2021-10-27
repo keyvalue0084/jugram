@@ -29,7 +29,7 @@ const styles = createStyles({
   }
 });
 
-export interface Props extends WithStyles<typeof styles> {}
+interface Props extends WithStyles<typeof styles> {}
 
 function SignUp(props: Props) {
   const { classes } = props;
@@ -63,21 +63,14 @@ function SignUp(props: Props) {
 
   //비밀번호 확인 비교
   const comparePassword = () => {
-    if (newUser.password === valid.passwordConfirm) {
-      setValid({
-        ...valid,
-        passwordOk: true
-      });
+    const passwordValid =
+      newUser.password === valid.passwordConfirm ? true : false;
+    setValid({
+      ...valid,
+      passwordOk: passwordValid
+    });
 
-      return true;
-    } else {
-      setValid({
-        ...valid,
-        passwordOk: false
-      });
-
-      return false;
-    }
+    return passwordValid;
   };
 
   //입력값 state 관리
@@ -124,7 +117,7 @@ function SignUp(props: Props) {
       </Typography>
       <Divider />
       <TextField
-        id="id-textfield"
+        id="email-textfield"
         name="email"
         label="EMAIL"
         placeholder="ENTER YOUR EMAIL"
@@ -161,7 +154,7 @@ function SignUp(props: Props) {
         helperText={valid.passwordOk === true ? "" : "Confirm your password"}
       />
       <TextField
-        id="id-textfield"
+        id="username-textfield"
         name="username"
         label="USER NAME"
         placeholder="ENTER YOUR NAME"
@@ -203,8 +196,8 @@ function SignUp(props: Props) {
   );
 }
 
-SignUp.propTypes = {
+SignUp.defaultProps = {
   classes: PropTypes.object.isRequired
-} as any;
+};
 
 export default withStyles(styles)(SignUp);

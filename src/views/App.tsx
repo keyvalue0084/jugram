@@ -17,7 +17,7 @@ const App = () => {
         let data = reponse.data as any;
         userDispatch({
           type: "LOGIN",
-          user: data as NewUser,
+          user: data,
           jwt: sessionStorage.getItem("jwt") as String
         });
       };

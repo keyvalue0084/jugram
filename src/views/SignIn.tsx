@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import { useUserState, useUserDispatch } from "../context/UserContext";
-import PropTypes, { string } from "prop-types";
+import { useUserDispatch } from "../context/UserContext";
+import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 
 import Typography from "@mui/material/Typography";
@@ -11,8 +11,7 @@ import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
 
 import { createStyles, withStyles, WithStyles } from "@mui/styles";
-import { login, NewUser } from "../hooks/Users";
-import { AxiosResponse } from "axios";
+import { login, NewUser, UserResponse } from "../hooks/Users";
 
 const styles = createStyles({
   button: {
@@ -20,13 +19,12 @@ const styles = createStyles({
   }
 });
 
-export interface Props extends WithStyles<typeof styles> {}
+interface Props extends WithStyles<typeof styles> {}
 
 function SignIn(props: Props) {
   const { classes } = props;
 
   const history = useHistory();
-  const userState = useUserState();
   const userDispatch = useUserDispatch();
 
   const [newUser, setUser] = useState<NewUser>({
@@ -44,14 +42,14 @@ function SignIn(props: Props) {
   });
 
   const doSignIn = () => {
-    let loginCallback = (reponse: AxiosResponse) => {
+    let loginCallback = (reponse: UserResponse) => {
       //reponse data에 접근하기 위해서 중간객체(data)도 type을 꼭 지정해줘야하는가? 해야한다면 더 쉬운 방법은 없을까?
-      let data = reponse.data as any;
+      let data = reponse.data;
 
       userDispatch({
         type: "LOGIN",
-        user: data.user as NewUser,
-        jwt: data.jwt as String
+        user: reponse.data.user,
+        jwt: reponse.data.jwt
       });
 
       history.push("/");
@@ -86,7 +84,7 @@ function SignIn(props: Props) {
       <Divider />
       <form name="signInForm">
         <TextField
-          id="outlined-uncontrolled"
+          id="username-outlined-uncontrolled"
           label="USER NAME"
           name="username"
           placeholder="ENTER YOUR NAME"
@@ -97,7 +95,7 @@ function SignIn(props: Props) {
           onChange={onChange}
         />
         <TextField
-          id="outlined-uncontrolled"
+          id="email-outlined-uncontrolled"
           label="EMAIL"
           name="email"
           placeholder="ENTER YOUR ID"
@@ -108,7 +106,7 @@ function SignIn(props: Props) {
           onChange={onChange}
         />
         <TextField
-          id="outlined-uncontrolled"
+          id="password-outlined-uncontrolled"
           label="PASSWORD"
           name="password"
           placeholder="ENTER YOUR PASSWORD"
@@ -140,6 +138,7 @@ function SignIn(props: Props) {
             variant="outlined"
             className={classes.button}
             color="secondary"
+            href="/"
           >
             CANCEL
           </Button>
@@ -149,8 +148,8 @@ function SignIn(props: Props) {
   );
 }
 
-SignIn.propTypes = {
+SignIn.defaultProps = {
   classes: PropTypes.object.isRequired
-} as any;
+};
 
 export default withStyles(styles)(SignIn);

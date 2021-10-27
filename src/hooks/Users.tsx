@@ -2,11 +2,17 @@ import axios, { AxiosResponse } from "axios";
 
 export type NewUser = Components.Schemas.NewUsersPermissionsUser;
 export type User = Components.Schemas.UsersPermissionsUser;
-
+export interface UserResData {
+  user: NewUser;
+  jwt: string;
+}
+export interface UserResponse extends AxiosResponse {
+  data: UserResData;
+}
 // 아이디 체크
 export const checkId = (user: User) => {
   axios
-    .get("https://jsbackend.herokuapp.com/users/" + user.id, {
+    .get(`https://jsbackend.herokuapp.com/users/${user.id}`, {
       params: {
         id: user.id
       }
@@ -55,7 +61,7 @@ export const addUser = (newUser: NewUser, callback: () => void) => {
 // 사용자 정보 가져오기
 export const getUser = (user: User) => {
   axios
-    .post("https://jsbackend.herokuapp.com/users/" + user.id, {})
+    .post(`https://jsbackend.herokuapp.com/users/${user.id}`, {})
     .then(function (response) {
       // response
       console.log(response);
@@ -72,11 +78,11 @@ export const getUser = (user: User) => {
 // 로그인하기
 export const login = (
   user: NewUser,
-  callback: (response: AxiosResponse) => void
+  callback: (response: UserResponse) => void
 ) => {
   let params = new FormData();
   params.append("identifier", user.email);
-  if (!!user.password) {
+  if (user.password) {
     params.append("password", user.password);
   }
 
@@ -86,7 +92,7 @@ export const login = (
     })
     .then(function (response) {
       // response
-      callback(response);
+      callback(response as UserResponse);
     })
     .catch(function (error) {
       // 오류발생시 실행
