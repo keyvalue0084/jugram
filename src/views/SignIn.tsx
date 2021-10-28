@@ -3,20 +3,24 @@ import { useHistory } from "react-router-dom";
 
 import { useUserDispatch } from "../context/UserContext";
 import PropTypes from "prop-types";
-import Box from "@mui/material/Box";
 
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
+import GoogleIcon from "@mui/icons-material/Google";
 
 import { createStyles, withStyles, WithStyles } from "@mui/styles";
-import { login, NewUser, UserResponse } from "../hooks/Users";
+import { login, NewUser } from "../hooks/Users";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 const styles = createStyles({
   button: {
-    margin: 10
+    marginTop: 10,
+    width: "100%"
   }
 });
 
@@ -26,6 +30,7 @@ function SignIn(props: Props) {
   const { classes } = props;
 
   const history = useHistory();
+
   const userDispatch = useUserDispatch();
 
   const [newUser, setUser] = useState<NewUser>({
@@ -43,8 +48,6 @@ function SignIn(props: Props) {
   });
 
   const doSignIn = () => {
-    console.log("ee");
-
     login(newUser)
       .then(response => {
         toast.success("로그인 성공!", {
@@ -60,8 +63,8 @@ function SignIn(props: Props) {
           }
         });
       })
-      .catch(response => {
-        toast.error("로그인 실패!", {
+      .catch(error => {
+        toast.error(error.response.data.message[0].messages[0].message, {
           position: toast.POSITION.TOP_CENTER,
           autoClose: 1500
         });
@@ -92,6 +95,7 @@ function SignIn(props: Props) {
       <Typography gutterBottom variant="h4" align="center">
         Sign in to JUGRAM!
       </Typography>
+
       <Divider />
       <form name="signInForm">
         <TextField
@@ -117,32 +121,51 @@ function SignIn(props: Props) {
           defaultValue={newUser.password}
           onChange={onChange}
         />
-        <Box textAlign="center">
-          <Button
-            variant="outlined"
-            className={classes.button}
-            color="primary"
-            onClick={doSignIn}
-          >
-            SIGN IN
-          </Button>
-          <Button
-            variant="outlined"
-            className={classes.button}
-            color="success"
-            href="/entry/signup"
-          >
-            SIGN UP
-          </Button>
-          <Button
-            variant="outlined"
-            className={classes.button}
-            color="secondary"
-            href="/"
-          >
-            CANCEL
-          </Button>
-        </Box>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Button
+              variant="outlined"
+              className={classes.button}
+              color="primary"
+              onClick={doSignIn}
+            >
+              SIGN IN
+            </Button>
+          </Grid>
+          <Grid item xs={3}>
+            <Button
+              variant="outlined"
+              className={classes.button}
+              color="success"
+              href="/entry/signup"
+            >
+              SIGN UP
+            </Button>
+          </Grid>
+          <Grid item xs={3}>
+            <Button
+              variant="outlined"
+              className={classes.button}
+              color="secondary"
+              href="/"
+            >
+              CANCEL
+            </Button>
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              startIcon={<GoogleIcon />}
+              variant="outlined"
+              fullWidth
+              onClick={() =>
+                (window.location.href =
+                  "https://jsbackend.herokuapp.com/connect/google")
+              }
+            >
+              Login with Google
+            </Button>
+          </Grid>
+        </Grid>
       </form>
     </Box>
   );

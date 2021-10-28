@@ -12,6 +12,7 @@ const EntryLayout = () => {
       <EntryHeader />
       <div>
         <Switch>
+          <Route path="/auth/callback/google" component={SignIn} />
           <Route path="/entry/signup" component={SignUp} />
           <Route path="/entry/signin" component={SignIn} />
         </Switch>

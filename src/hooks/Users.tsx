@@ -54,3 +54,15 @@ export const getMe = (jwt: string) => {
     }
   });
 };
+
+//소셜 로그인
+export const socialLogin = (provider: string, search: string) => {
+  return axios.get<UserResponse>(
+    `https://jsbackend.herokuapp.com/auth/${provider}/callback${search}`,
+    {
+      headers: {
+        "Content-type": "application/x-www-form-urlencoded"
+      }
+    }
+  );
+};

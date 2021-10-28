@@ -1,6 +1,7 @@
 import React, { Suspense, useEffect, lazy } from "react";
 import BasicLayout from "../layout/BasicLayout";
 import EntryLayout from "../layout/EntryLayout";
+import GoogleAuthCallback from "../sns/GoogleAuthCallback";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { getMe } from "../hooks/Users";
 import { useUserDispatch } from "../context/UserContext";
@@ -24,6 +25,10 @@ const App = () => {
     <BrowserRouter>
       <Suspense fallback={HeadLoading}>
         <Switch>
+          <Route
+            path="/auth/callback/google"
+            render={props => <GoogleAuthCallback />}
+          />
           <Route path="/entry" render={props => <EntryLayout />} />
           <Route path="/" render={props => <BasicLayout />} />
           <Redirect from="/" to="/index" />{" "}

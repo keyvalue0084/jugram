@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 
 // 게시물 리스트
 export const getArticles = (jwt: string) => {
