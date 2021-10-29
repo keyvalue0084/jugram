@@ -12,7 +12,6 @@ import Typography from "@mui/material/Typography";
 
 const ArticleList = () => {
   const userState = useUserState();
-  let [articles, setArticles] = useState([]);
 
   useEffect(() => {
     console.log(userState);

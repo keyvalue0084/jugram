@@ -7,9 +7,7 @@ import Welcome from "../views/Welcome";
 import ArticleList from "../views/ArticleList";
 import ArticleView from "../views/ArticleView";
 import ArticleRegister from "../views/ArticleRegister";
-import HeadLoading from "../lottie/HeadLoading";
 
-const lazyArticleList = React.lazy(() => import("../views/ArticleList"));
 const BasicLayout = () => {
   return (
     <>

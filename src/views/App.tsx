@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, lazy } from "react";
+import React, { Suspense } from "react";
 import BasicLayout from "../layout/BasicLayout";
 import EntryLayout from "../layout/EntryLayout";
 import GoogleAuthCallback from "../sns/GoogleAuthCallback";

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useUserState, useUserDispatch } from "../context/UserContext";
 import { toast, ToastContainer } from "react-toastify";
 
 import PropTypes from "prop-types";
