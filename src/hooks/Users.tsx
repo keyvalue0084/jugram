@@ -10,21 +10,27 @@ export interface UserResponse extends AxiosResponse {
   user: NewUser;
   jwt: string;
 }
+const userAxios = axios.create({ baseURL: "https://jsbackend.herokuapp.com" });
+
+userAxios.interceptors.request.use(config => {
+  if (sessionStorage.getItem("jwt")) {
+    config.headers = {
+      "Content-type": "application/x-www-form-urlencoded",
+      Authorization: `Bearer ${sessionStorage.getItem("jwt")}`
+    };
+  } else {
+    config.headers = {
+      "Content-type": "application/x-www-form-urlencoded"
+    };
+  }
+
+  return config;
+});
 
 // 사용자 추가
 export const addUser = (newUser: NewUser) => {
-  return axios.post("https://jsbackend.herokuapp.com/auth/local/register", {
-    username: newUser.username,
-    email: newUser.email,
-    provider: newUser.provider,
-    password: newUser.password,
-    resetPasswordToken: newUser.resetPasswordToken,
-    confirmationToken: newUser.confirmationToken,
-    confirmed: newUser.confirmed,
-    blocked: newUser.blocked,
-    role: newUser.role,
-    created_by: newUser.created_by,
-    updated_by: newUser.updated_by
+  return userAxios.post("/auth/local/register", {
+    ...newUser
   });
 };
 
@@ -35,34 +41,15 @@ export const login = (user: NewUser) => {
   if (user.password) {
     params.append("password", user.password);
   }
-
-  return axios.post<UserResponse>(
-    "https://jsbackend.herokuapp.com/auth/local",
-    params,
-    {
-      headers: { "Content-type": "application/x-www-form-urlencoded" }
-    }
-  );
+  return userAxios.post<UserResponse>("/auth/local", params);
 };
 
-// 로그인하기
+//내정보
 export const getMe = (jwt: string) => {
-  return axios.get<UserResponse>("https://jsbackend.herokuapp.com/users/me", {
-    headers: {
-      "Content-type": "application/x-www-form-urlencoded",
-      Authorization: "Bearer " + jwt
-    }
-  });
+  return userAxios.get<Components.Schemas.NewUsersPermissionsUser>("/users/me");
 };
 
 //소셜 로그인
 export const socialLogin = (provider: string, search: string) => {
-  return axios.get<UserResponse>(
-    `https://jsbackend.herokuapp.com/auth/${provider}/callback${search}`,
-    {
-      headers: {
-        "Content-type": "application/x-www-form-urlencoded"
-      }
-    }
-  );
+  return userAxios.get<UserResponse>(`/auth/${provider}/callback${search}`);
 };

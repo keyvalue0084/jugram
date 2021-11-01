@@ -12,7 +12,7 @@ interface State {
 // 모든 액션들을 위한 타입
 type Action =
   | { type: "LOGIN"; user: UserState; jwt: string }
-  | { type: "LOGOUT"; user: UserState; jwt: string };
+  | { type: "LOGOUT"; user?: UserState; jwt?: string };
 
 type UserDispatch = Dispatch<Action>;
 

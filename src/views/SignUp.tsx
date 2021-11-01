@@ -76,8 +76,7 @@ function SignUp(props: Props) {
 
   //비밀번호 확인 비교
   const comparePassword = () => {
-    const passwordValid =
-      newUser.password === valid.passwordConfirm ? true : false;
+    const passwordValid = newUser.password === valid.passwordConfirm;
     return passwordValid;
   };
 
