@@ -53,50 +53,46 @@ function SignUp(props: Props) {
 
   const doSignUp = () => {
     if (checkValidation()) {
-      addUser(newUser)
-        .then(response => {
-          toast.success("회원가입 성공!", {
-            position: toast.POSITION.TOP_CENTER,
-            autoClose: 1500,
-            onClose: () => {
-              history.push("/");
-            }
-          });
-        })
-        .catch(error => {
-          if (error.response) {
-            toast.error(error.response.data.message[0].messages[0].message, {
-              position: toast.POSITION.TOP_CENTER,
-              autoClose: 1500
-            });
+      addUser(newUser).then(response => {
+        toast.success("회원가입 성공!", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 1500,
+          onClose: () => {
+            history.push("/");
           }
         });
+      });
     }
   };
 
   //비밀번호 확인 비교
   const comparePassword = () => {
-    const passwordValid = newUser.password === valid.passwordConfirm;
-    return passwordValid;
+    return newUser.password === valid.passwordConfirm;
+  };
+
+  // 유효성 상태 토글
+  const tooglePasswordValidation = (validation: boolean) => {
+    setValid({
+      passwordOk: validation
+    });
+  };
+
+  const showInvalidMessage = (msg: string) => {
+    toast.error(msg, {
+      position: toast.POSITION.TOP_CENTER,
+      autoClose: 2000
+    });
   };
 
   //유효성 체크
   const checkValidation = () => {
-    let passwordValid = comparePassword();
-
-    setValid({
-      passwordOk: passwordValid
-    });
-
-    if (!passwordValid) {
-      toast.error("Please Confirm Your Password", {
-        position: toast.POSITION.TOP_CENTER,
-        autoClose: 2000
-      });
-      return false;
+    const valid = comparePassword();
+    tooglePasswordValidation(valid);
+    if (!valid) {
+      showInvalidMessage("Check Your Password");
     }
 
-    return true;
+    return valid;
   };
 
   //입력값 state 관리

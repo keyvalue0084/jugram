@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+import { toast } from "react-toastify";
 
 export type NewUser = Components.Schemas.NewUsersPermissionsUser;
 export type User = Components.Schemas.UsersPermissionsUser;
@@ -13,19 +14,29 @@ export interface UserResponse extends AxiosResponse {
 const userAxios = axios.create({ baseURL: "https://jsbackend.herokuapp.com" });
 
 userAxios.interceptors.request.use(config => {
-  if (sessionStorage.getItem("jwt")) {
-    config.headers = {
-      "Content-type": "application/x-www-form-urlencoded",
-      Authorization: `Bearer ${sessionStorage.getItem("jwt")}`
-    };
-  } else {
-    config.headers = {
-      "Content-type": "application/x-www-form-urlencoded"
-    };
+  if (config.headers) {
+    config.headers["Content-type"] = "application/x-www-form-urlencoded";
+    config.headers["Authorization"] = sessionStorage.getItem("jwt")
+      ? `Bearer ${sessionStorage.getItem("jwt")}`
+      : "";
   }
-
   return config;
 });
+
+userAxios.interceptors.response.use(
+  response => {
+    return response;
+  },
+  error => {
+    if (error.response) {
+      toast.error(error.response.data.message[0].messages[0].message, {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 1500
+      });
+    }
+    return Promise.reject(error);
+  }
+);
 
 // 사용자 추가
 export const addUser = (newUser: NewUser) => {

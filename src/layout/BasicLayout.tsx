@@ -1,22 +1,29 @@
-import React, { Suspense } from "react";
-import { Route, Switch } from "react-router-dom";
+import React from "react";
+import { Route, Switch, Redirect } from "react-router-dom";
 
 import Footer from "../components/Footers/Footer";
 import Header from "../components/Headers/Header";
-import Welcome from "../views/Welcome";
-import ArticleList from "../views/ArticleList";
-import ArticleView from "../views/ArticleView";
-import ArticleRegister from "../views/ArticleRegister";
+
+import routes, { CustomRouteProps } from "../var/routes";
 
 const BasicLayout = () => {
+  const getRoutes = (routes: Array<CustomRouteProps>) => {
+    return routes.map((prop, key) => {
+      if (prop.layout === "BASIC") {
+        return <Route path={prop.path} component={prop.component}></Route>;
+      } else {
+        return null;
+      }
+    });
+  };
+
+  console.log(getRoutes(routes));
   return (
     <>
       <Header />
       <Switch>
-        <Route exact path="/" component={Welcome} />
-        <Route path="/view" component={ArticleView} />
-        <Route path="/list" component={ArticleList} />
-        <Route path="/regist" component={ArticleRegister} />
+        {getRoutes(routes)}
+        <Redirect from="*" to="/welcome" />
       </Switch>
       <Footer />
     </>

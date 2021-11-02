@@ -48,27 +48,20 @@ function SignIn(props: Props) {
   });
 
   const doSignIn = () => {
-    login(newUser)
-      .then(response => {
-        toast.success("로그인 성공!", {
-          position: toast.POSITION.TOP_CENTER,
-          autoClose: 1500,
-          onClose: () => {
-            userDispatch({
-              type: "LOGIN",
-              user: response.data.user,
-              jwt: response.data.jwt
-            });
-            history.push("/");
-          }
-        });
-      })
-      .catch(error => {
-        toast.error(error.response.data.message[0].messages[0].message, {
-          position: toast.POSITION.TOP_CENTER,
-          autoClose: 1500
-        });
+    login(newUser).then(response => {
+      toast.success("로그인 성공!", {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 1500,
+        onClose: () => {
+          userDispatch({
+            type: "LOGIN",
+            user: response.data.user,
+            jwt: response.data.jwt
+          });
+          history.push("/");
+        }
       });
+    });
   };
 
   //입력값 state 관리

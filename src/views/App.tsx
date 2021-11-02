@@ -5,11 +5,9 @@ import GoogleAuthCallback from "../sns/GoogleAuthCallback";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { getMe } from "../hooks/Users";
 import { useUserDispatch, useUserState } from "../context/UserContext";
-import HeadLoading from "../lottie/HeadLoading";
 
 const App = () => {
   const userDispatch = useUserDispatch();
-  const userState = useUserState();
   const jwt = sessionStorage.getItem("jwt");
 
   useEffect(() => {
