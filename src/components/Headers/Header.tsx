@@ -2,6 +2,8 @@ import React from "react";
 import { useUserState, useUserDispatch } from "../../context/UserContext";
 import { useHistory } from "react-router-dom";
 
+import { V_ROUTES } from "../../var/keywords";
+
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -69,7 +71,11 @@ const Header = () => {
             </Avatar>
           </IconButton>
         ) : (
-          <IconButton edge="end" aria-label="AccountBox" href="/entry/signin">
+          <IconButton
+            edge="end"
+            aria-label="AccountBox"
+            href={V_ROUTES.AUTH.SIGN_IN.PATH}
+          >
             <AccountCircleIcon />
           </IconButton>
         )}

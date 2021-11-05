@@ -1,5 +1,5 @@
 import React, { useReducer, useContext, createContext, Dispatch } from "react";
-
+import { V_USER_CONTEXT } from "../var/keywords";
 // 필요한 타입들을 미리 선언
 type UserState = Components.Schemas.NewUsersPermissionsUser;
 
@@ -28,15 +28,15 @@ const initialState: State = {
 // 리듀서
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case "LOGIN":
-      if (!sessionStorage.getItem("jwt")) {
+    case V_USER_CONTEXT.ACTION.LOGIN.NAME:
+      if (!sessionStorage.getItem("jwt") && action.jwt) {
         sessionStorage.setItem("jwt", action.jwt);
       }
       return {
         jwt: action.jwt,
         user: action.user
       };
-    case "LOGOUT":
+    case V_USER_CONTEXT.ACTION.LOGOUT.NAME:
       sessionStorage.removeItem("jwt");
       return {
         jwt: undefined,

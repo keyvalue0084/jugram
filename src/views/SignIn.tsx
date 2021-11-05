@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 
 import { useUserDispatch } from "../context/UserContext";
 import PropTypes from "prop-types";
+import { V_ROUTES, V_USER_CONTEXT } from "../var/keywords";
 
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -49,18 +50,12 @@ function SignIn(props: Props) {
 
   const doSignIn = () => {
     login(newUser).then(response => {
-      toast.success("로그인 성공!", {
-        position: toast.POSITION.TOP_CENTER,
-        autoClose: 1500,
-        onClose: () => {
-          userDispatch({
-            type: "LOGIN",
-            user: response.data.user,
-            jwt: response.data.jwt
-          });
-          history.push("/");
-        }
+      userDispatch({
+        type: "LOGIN",
+        user: response.data.user,
+        jwt: response.data.jwt
       });
+      history.push("/");
     });
   };
 
@@ -130,7 +125,7 @@ function SignIn(props: Props) {
               variant="outlined"
               className={classes.button}
               color="success"
-              href="/entry/signup"
+              href={V_ROUTES.AUTH.SIGN_UP.PATH}
             >
               SIGN UP
             </Button>
