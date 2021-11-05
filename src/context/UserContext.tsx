@@ -1,5 +1,7 @@
 import React, { useReducer, useContext, createContext, Dispatch } from "react";
 import { V_USER_CONTEXT } from "../var/keywords";
+import { toast, ToastContainer } from "react-toastify";
+
 // 필요한 타입들을 미리 선언
 type UserState = Components.Schemas.NewUsersPermissionsUser;
 
@@ -27,23 +29,36 @@ const initialState: State = {
 
 // 리듀서
 function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case V_USER_CONTEXT.ACTION.LOGIN.NAME:
-      if (!sessionStorage.getItem("jwt") && action.jwt) {
-        sessionStorage.setItem("jwt", action.jwt);
-      }
-      return {
-        jwt: action.jwt,
-        user: action.user
-      };
-    case V_USER_CONTEXT.ACTION.LOGOUT.NAME:
-      sessionStorage.removeItem("jwt");
-      return {
-        jwt: undefined,
-        user: undefined
-      };
-    default:
-      throw new Error("Unhandled action");
+  try {
+    switch (action.type) {
+      case V_USER_CONTEXT.ACTION.LOGIN.NAME:
+        if (!sessionStorage.getItem("jwt") && action.jwt) {
+          sessionStorage.setItem("jwt", action.jwt);
+        }
+        return {
+          jwt: action.jwt,
+          user: action.user
+        };
+      case V_USER_CONTEXT.ACTION.LOGOUT.NAME:
+        sessionStorage.removeItem("jwt");
+        return {
+          jwt: undefined,
+          user: undefined
+        };
+      default:
+        throw new Error("Unhandled action");
+    }
+  } catch (e) {
+    console.error(e);
+    toast.success("USER DISPATCH가 실패하였습니다!", {
+      position: toast.POSITION.TOP_CENTER,
+      autoClose: 1500
+    });
+  } finally {
+    return {
+      jwt: undefined,
+      user: undefined
+    };
   }
 }
 
@@ -53,6 +68,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   return (
     <UserStateContext.Provider value={state}>
       <UserDispatchContext.Provider value={dispatch}>
+        <ToastContainer />
         {children}
       </UserDispatchContext.Provider>
     </UserStateContext.Provider>
