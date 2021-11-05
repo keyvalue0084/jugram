@@ -1,4 +1,6 @@
 import React from "react";
+import { V_ROUTES } from "../../var/keywords";
+
 import Box from "@mui/material/Box";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
@@ -24,9 +26,9 @@ const Footer = () => {
         <BottomNavigationAction label="Home" icon={<HomeIcon />} href="/" />
         <BottomNavigationAction label="Search" icon={<SearchIcon />} />
         <BottomNavigationAction
-          label="List"
+          label={V_ROUTES.ARTICLE_LIST.NAME}
           icon={<FormatListBulletedIcon />}
-          href="/list"
+          href={V_ROUTES.ARTICLE_LIST.PATH}
         />
         <BottomNavigationAction label="Map" icon={<LocationOnIcon />} />
         <BottomNavigationAction label="Shop" icon={<LocalMallIcon />} />
