@@ -1,123 +1,66 @@
 import axios, { AxiosResponse } from "axios";
+import { toast } from "react-toastify";
 
 export type NewUser = Components.Schemas.NewUsersPermissionsUser;
 export type User = Components.Schemas.UsersPermissionsUser;
+export interface UserResData {
+  user: NewUser;
+  jwt: string;
+}
+export interface UserResponse extends AxiosResponse {
+  user: NewUser;
+  jwt: string;
+}
+const userAxios = axios.create({ baseURL: "https://jsbackend.herokuapp.com" });
 
-// 아이디 체크
-export const checkId = (user: User) => {
-  axios
-    .get("https://jsbackend.herokuapp.com/users/" + user.id, {
-      params: {
-        id: user.id
-      }
-    })
-    .then(function (response) {
-      // response
-    })
-    .catch(function (error) {
-      // 오류발생시 실행
-    })
-    .then(function () {
-      // 항상 실행
-    });
-};
+userAxios.interceptors.request.use(config => {
+  if (config.headers) {
+    config.headers["Content-type"] = "application/x-www-form-urlencoded";
+    config.headers["Authorization"] = sessionStorage.getItem("jwt")
+      ? `Bearer ${sessionStorage.getItem("jwt")}`
+      : "";
+  }
+  return config;
+});
+
+userAxios.interceptors.response.use(
+  response => {
+    return response;
+  },
+  error => {
+    if (error.response) {
+      toast.error(error.response.data.message[0].messages[0].message, {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 1500
+      });
+    }
+    return Promise.reject(error);
+  }
+);
 
 // 사용자 추가
-export const addUser = (newUser: NewUser, callback: () => void) => {
-  axios
-    .post("https://jsbackend.herokuapp.com/auth/local/register", {
-      username: newUser.username,
-      email: newUser.email,
-      provider: newUser.provider,
-      password: newUser.password,
-      resetPasswordToken: newUser.resetPasswordToken,
-      confirmationToken: newUser.confirmationToken,
-      confirmed: newUser.confirmed,
-      blocked: newUser.blocked,
-      role: newUser.role,
-      created_by: newUser.created_by,
-      updated_by: newUser.updated_by
-    })
-    .then(function (response) {
-      // response
-      console.log(response);
-      callback();
-    })
-    .catch(function (error) {
-      // 오류발생시 실행
-      console.error(error);
-    })
-    .then(function () {
-      // 항상 실행
-    });
-};
-
-// 사용자 정보 가져오기
-export const getUser = (user: User) => {
-  axios
-    .post("https://jsbackend.herokuapp.com/users/" + user.id, {})
-    .then(function (response) {
-      // response
-      console.log(response);
-    })
-    .catch(function (error) {
-      // 오류발생시 실행
-      console.error(error);
-    })
-    .then(function () {
-      // 항상 실행
-    });
+export const addUser = (newUser: NewUser) => {
+  return userAxios.post("/auth/local/register", {
+    ...newUser
+  });
 };
 
 // 로그인하기
-export const login = (
-  user: NewUser,
-  callback: (response: AxiosResponse) => void
-) => {
+export const login = (user: NewUser) => {
   let params = new FormData();
   params.append("identifier", user.email);
-  if (!!user.password) {
+  if (user.password) {
     params.append("password", user.password);
   }
-
-  axios
-    .post("https://jsbackend.herokuapp.com/auth/local", params, {
-      headers: { "Content-type": "application/x-www-form-urlencoded" }
-    })
-    .then(function (response) {
-      // response
-      callback(response);
-    })
-    .catch(function (error) {
-      // 오류발생시 실행
-      console.error(error);
-    })
-    .then(function () {
-      // 항상 실행
-    });
+  return userAxios.post<UserResponse>("/auth/local", params);
 };
 
-// 로그인하기
-export const getMe = (
-  jwt: string,
-  callback: (response: AxiosResponse) => void
-) => {
-  axios
-    .get("https://jsbackend.herokuapp.com/users/me", {
-      headers: {
-        "Content-type": "application/x-www-form-urlencoded",
-        Authorization: "Bearer " + jwt
-      }
-    })
-    .then(function (response) {
-      // response
-      callback(response);
-    })
-    .catch(function (error) {
-      // 오류발생시 실행
-      console.error(error);
-    })
-    .then(function () {
-      // 항상 실행
-    });
+//내정보
+export const getMe = (jwt: string) => {
+  return userAxios.get<Components.Schemas.NewUsersPermissionsUser>("/users/me");
+};
+
+//소셜 로그인
+export const socialLogin = (provider: string, search: string) => {
+  return userAxios.get<UserResponse>(`/auth/${provider}/callback${search}`);
 };

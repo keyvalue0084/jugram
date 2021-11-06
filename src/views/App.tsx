@@ -1,36 +1,39 @@
 import React, { useEffect } from "react";
-
-import BasicLayout from "../layout/BasicLayout";
-import EntryLayout from "../layout/EntryLayout";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import { getMe, NewUser } from "../hooks/Users";
-import { useUserState, useUserDispatch } from "../context/UserContext";
-import { AxiosResponse } from "axios";
+import { getMe } from "../hooks/Users";
+import { useUserDispatch } from "../context/UserContext";
+import { layoutRoutes, CustomRouteProps } from "../var/routes";
 
 const App = () => {
-  const userState = useUserState();
   const userDispatch = useUserDispatch();
+  const jwt = sessionStorage.getItem("jwt");
 
   useEffect(() => {
-    if (!!sessionStorage.getItem("jwt")) {
-      let getMeCallback = (reponse: AxiosResponse) => {
-        let data = reponse.data as any;
+    if (jwt) {
+      getMe(jwt).then(response => {
         userDispatch({
           type: "LOGIN",
-          user: data as NewUser,
-          jwt: sessionStorage.getItem("jwt") as String
+          user: response.data,
+          jwt: jwt
         });
-      };
-
-      getMe(sessionStorage.getItem("jwt") as string, getMeCallback);
+      });
     }
   }, []);
+
+  const getRoutes = (routes: Array<CustomRouteProps>) => {
+    return routes.map((prop, key) => {
+      if (prop.show === true) {
+        return <Route path={prop.path} component={prop.component}></Route>;
+      } else {
+        return null;
+      }
+    });
+  };
 
   return (
     <BrowserRouter>
       <Switch>
-        <Route path="/entry" render={props => <EntryLayout />} />
-        <Route path="/" render={props => <BasicLayout />} />
+        {getRoutes(layoutRoutes)}
         <Redirect from="/" to="/index" />{" "}
       </Switch>
     </BrowserRouter>

@@ -1,19 +1,15 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useUserState, useUserDispatch } from "../context/UserContext";
+import { toast, ToastContainer } from "react-toastify";
 
 import PropTypes from "prop-types";
-import Box from "@mui/material/Box";
 
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 
 import { createStyles, withStyles, WithStyles } from "@mui/styles";
 import { addUser, NewUser } from "../hooks/Users";
@@ -25,17 +21,17 @@ interface Valid {
 
 const styles = createStyles({
   button: {
-    margin: 10
+    marginTop: 10,
+    width: "100%"
   }
 });
 
-export interface Props extends WithStyles<typeof styles> {}
+interface Props extends WithStyles<typeof styles> {}
 
 function SignUp(props: Props) {
   const { classes } = props;
   const history = useHistory();
 
-  const [open, setOpen] = React.useState(false);
   const [valid, setValid] = useState<Valid>({
     passwordConfirm: undefined,
     passwordOk: true
@@ -56,28 +52,47 @@ function SignUp(props: Props) {
   });
 
   const doSignUp = () => {
-    if (comparePassword()) {
-      addUser(newUser, () => setOpen(true));
+    if (checkValidation()) {
+      addUser(newUser).then(response => {
+        toast.success("회원가입 성공!", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 1500,
+          onClose: () => {
+            history.push("/");
+          }
+        });
+      });
     }
   };
 
   //비밀번호 확인 비교
   const comparePassword = () => {
-    if (newUser.password === valid.passwordConfirm) {
-      setValid({
-        ...valid,
-        passwordOk: true
-      });
+    return newUser.password === valid.passwordConfirm;
+  };
 
-      return true;
-    } else {
-      setValid({
-        ...valid,
-        passwordOk: false
-      });
+  // 유효성 상태 토글
+  const tooglePasswordValidation = (validation: boolean) => {
+    setValid({
+      passwordOk: validation
+    });
+  };
 
-      return false;
+  const showInvalidMessage = (msg: string) => {
+    toast.error(msg, {
+      position: toast.POSITION.TOP_CENTER,
+      autoClose: 2000
+    });
+  };
+
+  //유효성 체크
+  const checkValidation = () => {
+    const valid = comparePassword();
+    tooglePasswordValidation(valid);
+    if (!valid) {
+      showInvalidMessage("Check Your Password");
     }
+
+    return valid;
   };
 
   //입력값 state 관리
@@ -97,11 +112,6 @@ function SignUp(props: Props) {
     });
   };
 
-  const done = () => {
-    setOpen(false);
-    history.push("/");
-  };
-
   return (
     <Box
       pl={"30%"}
@@ -113,6 +123,7 @@ function SignUp(props: Props) {
         maxWidth: "500px"
       }}
     >
+      <ToastContainer />
       <Typography gutterBottom variant="h4" align="center">
         Sign up to JUGRAM!
       </Typography>
@@ -124,7 +135,7 @@ function SignUp(props: Props) {
       </Typography>
       <Divider />
       <TextField
-        id="id-textfield"
+        id="email-textfield"
         name="email"
         label="EMAIL"
         placeholder="ENTER YOUR EMAIL"
@@ -161,7 +172,7 @@ function SignUp(props: Props) {
         helperText={valid.passwordOk === true ? "" : "Confirm your password"}
       />
       <TextField
-        id="id-textfield"
+        id="username-textfield"
         name="username"
         label="USER NAME"
         placeholder="ENTER YOUR NAME"
@@ -171,40 +182,34 @@ function SignUp(props: Props) {
         defaultValue={newUser.username}
         onChange={onChange}
       />
-      <Box textAlign="center">
-        <Button
-          variant="outlined"
-          className={classes.button}
-          color="success"
-          onClick={doSignUp}
-        >
-          SIGN UP
-        </Button>
-        <Button variant="outlined" className={classes.button} color="secondary">
-          CANCEL
-        </Button>
-      </Box>
-      <Dialog
-        open={open}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"You are Member"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Membership registration has been completed successfully!!
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={done}>Confirm</Button>
-        </DialogActions>
-      </Dialog>
+      <Grid container spacing={2}>
+        <Grid item xs={8}>
+          <Button
+            variant="outlined"
+            className={classes.button}
+            color="success"
+            onClick={doSignUp}
+          >
+            SIGN UP
+          </Button>
+        </Grid>
+        <Grid item xs={4}>
+          <Button
+            variant="outlined"
+            className={classes.button}
+            color="secondary"
+            href="/"
+          >
+            CANCEL
+          </Button>
+        </Grid>
+      </Grid>
     </Box>
   );
 }
 
-SignUp.propTypes = {
+SignUp.defaultProps = {
   classes: PropTypes.object.isRequired
-} as any;
+};
 
 export default withStyles(styles)(SignUp);
