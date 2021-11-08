@@ -54,12 +54,8 @@ function reducer(state: State, action: Action): State {
       position: toast.POSITION.TOP_CENTER,
       autoClose: 1500
     });
-  } finally {
-    return {
-      jwt: undefined,
-      user: undefined
-    };
   }
+  return {};
 }
 
 export function UserProvider({ children }: { children: React.ReactNode }) {

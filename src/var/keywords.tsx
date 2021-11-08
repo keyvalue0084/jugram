@@ -39,6 +39,11 @@ export const V_ROUTES = {
     PATH: "/articleView",
     LAYOUT: "BASIC"
   },
+  ARTICLE_REGIST: {
+    NAME: "articleRegist",
+    PATH: "/articleRegist",
+    LAYOUT: "BASIC"
+  },
   AUTH: {
     CALLBACK_GOOGLE: {
       NAME: "callbackGoogle",

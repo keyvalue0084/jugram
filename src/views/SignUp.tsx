@@ -52,7 +52,7 @@ function SignUp(props: Props) {
   });
 
   const doSignUp = () => {
-    if (checkValidation()) {
+    if (signUpProcess()) {
       addUser(newUser).then(response => {
         toast.success("회원가입 성공!", {
           position: toast.POSITION.TOP_CENTER,
@@ -85,7 +85,7 @@ function SignUp(props: Props) {
   };
 
   //유효성 체크
-  const checkValidation = () => {
+  const signUpProcess = () => {
     const valid = comparePassword();
     tooglePasswordValidation(valid);
     if (!valid) {

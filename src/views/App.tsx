@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { getMe } from "../hooks/Users";
-import { useUserDispatch } from "../context/UserContext";
+import { useUserDispatch, useUserState } from "../context/UserContext";
 import { layoutRoutes, CustomRouteProps } from "../var/routes";
 
 const App = () => {
@@ -20,10 +20,12 @@ const App = () => {
     }
   }, []);
 
-  const getRoutes = (routes: Array<CustomRouteProps>) => {
+  const getRoutes = (routes: CustomRouteProps[]) => {
     return routes.map((prop, key) => {
       if (prop.show === true) {
-        return <Route path={prop.path} component={prop.component}></Route>;
+        return (
+          <Route path={prop.path} component={prop.component} key={key}></Route>
+        );
       } else {
         return null;
       }

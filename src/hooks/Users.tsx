@@ -1,4 +1,5 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
+import customAxios from "./CustomAxios";
 import { toast } from "react-toastify";
 
 export type NewUser = Components.Schemas.NewUsersPermissionsUser;
@@ -11,19 +12,8 @@ export interface UserResponse extends AxiosResponse {
   user: NewUser;
   jwt: string;
 }
-const userAxios = axios.create({ baseURL: "https://jsbackend.herokuapp.com" });
 
-userAxios.interceptors.request.use(config => {
-  if (config.headers) {
-    config.headers["Content-type"] = "application/x-www-form-urlencoded";
-    config.headers["Authorization"] = sessionStorage.getItem("jwt")
-      ? `Bearer ${sessionStorage.getItem("jwt")}`
-      : "";
-  }
-  return config;
-});
-
-userAxios.interceptors.response.use(
+customAxios.interceptors.response.use(
   response => {
     return response;
   },
@@ -40,7 +30,7 @@ userAxios.interceptors.response.use(
 
 // 사용자 추가
 export const addUser = (newUser: NewUser) => {
-  return userAxios.post("/auth/local/register", {
+  return customAxios.post("/auth/local/register", {
     ...newUser
   });
 };
@@ -52,15 +42,17 @@ export const login = (user: NewUser) => {
   if (user.password) {
     params.append("password", user.password);
   }
-  return userAxios.post<UserResponse>("/auth/local", params);
+  return customAxios.post<UserResponse>("/auth/local", params);
 };
 
 //내정보
 export const getMe = (jwt: string) => {
-  return userAxios.get<Components.Schemas.NewUsersPermissionsUser>("/users/me");
+  return customAxios.get<Components.Schemas.NewUsersPermissionsUser>(
+    "/users/me"
+  );
 };
 
 //소셜 로그인
 export const socialLogin = (provider: string, search: string) => {
-  return userAxios.get<UserResponse>(`/auth/${provider}/callback${search}`);
+  return customAxios.get<UserResponse>(`/auth/${provider}/callback${search}`);
 };

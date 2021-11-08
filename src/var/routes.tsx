@@ -3,8 +3,9 @@ import React from "react";
 import AuthLayout from "../layout/AuthLayout";
 import BasicLayout from "../layout/BasicLayout";
 import Welcome from "../views/Welcome";
-import ArticleList from "../views/ArticleList";
-import ArticleView from "../views/ArticleView";
+import ArticleList from "../views/Article/ArticleList";
+import ArticleView from "../views/Article/ArticleView";
+import ArticleRegist from "../views/Article/ArticleRegist";
 import GoogleAuthCallback from "../sns/GoogleAuthCallback";
 import SignUp from "../views/SignUp";
 import SignIn from "../views/SignIn";
@@ -53,6 +54,13 @@ const routes: CustomRouteProps[] = [
     name: V_ROUTES.ARTICLE_VIEW.NAME,
     component: ArticleView,
     layout: V_ROUTES.ARTICLE_VIEW.LAYOUT,
+    show: true
+  },
+  {
+    path: V_ROUTES.ARTICLE_REGIST.PATH,
+    name: V_ROUTES.ARTICLE_REGIST.NAME,
+    component: ArticleRegist,
+    layout: V_ROUTES.ARTICLE_REGIST.LAYOUT,
     show: true
   },
   {
