@@ -27,7 +27,7 @@ const ArticleList = () => {
     >
       {userState.jwt ? (
         articles.map((prop, key) => {
-          return <ArticleCard {...prop}></ArticleCard>;
+          return <ArticleCard {...prop} key={key}></ArticleCard>;
         })
       ) : (
         <BookLoading />

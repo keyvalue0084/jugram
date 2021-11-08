@@ -2,14 +2,13 @@ import { AxiosResponse } from "axios";
 import customAxios from "./CustomAxios";
 import { toast } from "react-toastify";
 
-export type NewUser = Components.Schemas.NewUsersPermissionsUser;
 export type User = Components.Schemas.UsersPermissionsUser;
 export interface UserResData {
-  user: NewUser;
+  user: Components.Schemas.NewUsersPermissionsUser;
   jwt: string;
 }
 export interface UserResponse extends AxiosResponse {
-  user: NewUser;
+  user: Components.Schemas.NewUsersPermissionsUser;
   jwt: string;
 }
 
@@ -29,14 +28,16 @@ customAxios.interceptors.response.use(
 );
 
 // 사용자 추가
-export const addUser = (newUser: NewUser) => {
+export const addUser = (
+  newUser: Components.Schemas.NewUsersPermissionsUser
+) => {
   return customAxios.post("/auth/local/register", {
     ...newUser
   });
 };
 
 // 로그인하기
-export const login = (user: NewUser) => {
+export const login = (user: Components.Schemas.NewUsersPermissionsUser) => {
   let params = new FormData();
   params.append("identifier", user.email);
   if (user.password) {

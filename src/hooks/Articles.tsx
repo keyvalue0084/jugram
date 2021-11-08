@@ -1,6 +1,6 @@
-import customAxios from "./CustomAxios";
+import { jsonAxios } from "./CustomAxios";
 
-customAxios.interceptors.request.use(config => {
+jsonAxios.interceptors.request.use(config => {
   if (config.headers) {
     config.headers["Content-type"] = "application/x-www-form-urlencoded";
     config.headers["Authorization"] = sessionStorage.getItem("jwt")
@@ -12,5 +12,10 @@ customAxios.interceptors.request.use(config => {
 
 // 게시물 리스트
 export const getArticles = (jwt: string) => {
-  return customAxios.get<Components.Schemas.Article[]>("/articles", {});
+  return jsonAxios.get<Components.Schemas.Article[]>("/articles", {});
+};
+
+//게시물 생성
+export const addArticle = (article: Components.Schemas.NewArticle) => {
+  return jsonAxios.post<Components.Schemas.Article>("/articles", article);
 };

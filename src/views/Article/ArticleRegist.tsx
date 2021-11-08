@@ -1,11 +1,50 @@
-import React from "react";
+import React, { useState } from "react";
+
+import { useHistory } from "react-router";
+import { addArticle } from "../../hooks/Articles";
 
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 const ArticleRegister = () => {
+  const [article, setArticle] = useState<Components.Schemas.NewArticle>();
+  const [open, setOpen] = React.useState(false);
+
+  const history = useHistory();
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  //입력값 state 관리
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setArticle({
+      ...article,
+      [name]: value
+    });
+  };
+
+  const registProcess = () => {
+    if (article) {
+      handleClose();
+      addArticle(article).then(response => {
+        history.push("/articleList");
+      });
+    }
+  };
+
   return (
     <Box
       pl={30}
@@ -18,19 +57,21 @@ const ArticleRegister = () => {
           <TextField
             id="outlined-multiline-static"
             label="Contents"
+            name="content"
             multiline
             rows={14}
             fullWidth
-            defaultValue=""
+            onChange={onChange}
+            defaultValue={article?.content}
           />
         </Grid>
         <Grid item xs={9} marginTop={2}>
           <Button
             variant="outlined"
             color="primary"
-            href="/"
             size="large"
             fullWidth
+            onClick={handleClickOpen}
           >
             Regist
           </Button>
@@ -43,10 +84,29 @@ const ArticleRegister = () => {
             size="large"
             fullWidth
           >
-            Confirm
+            Cancel
           </Button>
         </Grid>
       </Grid>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"REGIST"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Would you like to register
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={registProcess}>Yes</Button>
+          <Button onClick={handleClose} autoFocus>
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
