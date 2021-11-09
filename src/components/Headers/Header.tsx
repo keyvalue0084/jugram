@@ -41,7 +41,11 @@ const Header = () => {
   return (
     <Box
       position="fixed"
-      sx={{ border: "1px dashed grey", background: "white", width: "98vw" }}
+      sx={{
+        border: "1px dashed grey",
+        background: "white",
+        width: "98vw"
+      }}
     >
       <Toolbar variant="dense">
         <IconButton edge="start" aria-label="menu" sx={{ mr: 2 }}>

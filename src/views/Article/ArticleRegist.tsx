@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import { useHistory } from "react-router";
 import { addArticle } from "../../hooks/Articles";
+import { useUserState } from "../../context/UserContext";
 
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -16,6 +17,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 const ArticleRegister = () => {
   const [article, setArticle] = useState<Components.Schemas.NewArticle>();
   const [open, setOpen] = React.useState(false);
+  const userState = useUserState();
 
   const history = useHistory();
 
@@ -39,6 +41,7 @@ const ArticleRegister = () => {
   const registProcess = () => {
     if (article) {
       handleClose();
+      article.user = userState.user?.id;
       addArticle(article).then(response => {
         history.push("/articleList");
       });

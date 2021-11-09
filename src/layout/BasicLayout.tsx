@@ -5,6 +5,7 @@ import Footer from "../components/Footers/Footer";
 import Header from "../components/Headers/Header";
 
 import routes, { CustomRouteProps } from "../var/routes";
+import { Grid } from "@mui/material";
 
 const BasicLayout = () => {
   const getRoutes = (routes: CustomRouteProps[]) => {
@@ -20,14 +21,20 @@ const BasicLayout = () => {
   };
 
   return (
-    <>
-      <Header />
-      <Switch>
-        {getRoutes(routes)}
-        <Redirect from="*" to="/welcome" />
-      </Switch>
-      <Footer />
-    </>
+    <Grid container>
+      <Grid item alignItems="center" xs={12}>
+        <Header />
+      </Grid>
+      <Grid item textAlign="center" xs={12}>
+        <Switch>
+          {getRoutes(routes)}
+          <Redirect from="*" to="/welcome" />
+        </Switch>
+      </Grid>
+      <Grid item alignItems="center" xs={12}>
+        <Footer />
+      </Grid>
+    </Grid>
   );
 };
 

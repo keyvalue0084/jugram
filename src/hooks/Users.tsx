@@ -8,7 +8,7 @@ export interface UserResData {
   jwt: string;
 }
 export interface UserResponse extends AxiosResponse {
-  user: Components.Schemas.NewUsersPermissionsUser;
+  user: Components.Schemas.UsersPermissionsUser;
   jwt: string;
 }
 
@@ -48,9 +48,7 @@ export const login = (user: Components.Schemas.NewUsersPermissionsUser) => {
 
 //내정보
 export const getMe = (jwt: string) => {
-  return customAxios.get<Components.Schemas.NewUsersPermissionsUser>(
-    "/users/me"
-  );
+  return customAxios.get<Components.Schemas.UsersPermissionsUser>("/users/me");
 };
 
 //소셜 로그인

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useUserState } from "../../context/UserContext";
 import { getArticles } from "../../hooks/Articles";
-import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
 import ArticleCard from "./ArticleCard";
 import BookLoading from "../../lottie/BookLoading";
 
@@ -19,11 +19,15 @@ const ArticleList = () => {
   }, [userState.jwt]);
 
   return (
-    <Box
-      pl={30}
-      pr={30}
-      pt={10}
-      style={{ maxHeight: "80vh", overflow: "auto" }}
+    <Grid
+      container
+      spacing={3}
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+      style={{ minHeight: "100vh" }}
+      paddingTop={10}
+      paddingBottom={10}
     >
       {userState.jwt ? (
         articles.map((prop, key) => {
@@ -32,7 +36,7 @@ const ArticleList = () => {
       ) : (
         <BookLoading />
       )}
-    </Box>
+    </Grid>
   );
 };
 
