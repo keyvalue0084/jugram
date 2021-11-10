@@ -1,7 +1,6 @@
 import React from "react";
 import { useUserState } from "../../context/UserContext";
 import { deleteArticle } from "../../hooks/Articles";
-import { useHistory } from "react-router";
 
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -27,7 +26,6 @@ import Moment from "moment";
 const ArticleCard = (articleProp: Components.Schemas.Article) => {
   const userState = useUserState();
   const [open, setOpen] = React.useState(false);
-  const history = useHistory();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -43,7 +41,7 @@ const ArticleCard = (articleProp: Components.Schemas.Article) => {
         return (
           <CardActions>
             <Grid container>
-              <Grid xs={6} textAlign="left">
+              <Grid item xs={6} textAlign="left">
                 <IconButton
                   aria-label="delete"
                   size="large"
@@ -55,7 +53,7 @@ const ArticleCard = (articleProp: Components.Schemas.Article) => {
                   <FavoriteIcon fontSize="inherit" />
                 </IconButton>
               </Grid>
-              <Grid xs={6} textAlign="right">
+              <Grid item xs={6} textAlign="right">
                 <IconButton
                   aria-label="delete"
                   size="large"

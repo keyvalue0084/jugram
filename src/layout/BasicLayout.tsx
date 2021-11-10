@@ -21,7 +21,7 @@ const BasicLayout = () => {
   };
 
   return (
-    <Grid container>
+    <Grid container spacing={2}>
       <Grid item alignItems="center" xs={12}>
         <Header />
       </Grid>

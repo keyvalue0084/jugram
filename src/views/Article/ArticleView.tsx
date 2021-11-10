@@ -23,6 +23,7 @@ import ViewListIcon from "@mui/icons-material/ViewList";
 import SaveIcon from "@mui/icons-material/Save";
 
 import Moment from "moment";
+import { addFiles } from "../../hooks/Files";
 
 const ArticleView = () => {
   const userState = useUserState();
@@ -63,7 +64,9 @@ const ArticleView = () => {
     if (article) {
       handleClose();
       updateArticle(article).then(response => {
-        history.push("/articleList");
+        addFiles(document.querySelector("form")).then(response => {
+          history.push("/articleList");
+        });
       });
     }
   };
@@ -134,6 +137,11 @@ const ArticleView = () => {
             defaultValue={article?.content}
             inputProps={{ readOnly: !isWriter }}
           />
+        </Grid>
+        <Grid item xs={12} marginTop={2}>
+          <form>
+            <input type="file" name="files" />
+          </form>
         </Grid>
         <Dialog
           open={open}
