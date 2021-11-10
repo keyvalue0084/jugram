@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { getMe } from "../hooks/Users";
-import { useUserDispatch, useUserState } from "../context/UserContext";
+import { useUserDispatch } from "../context/UserContext";
 import { layoutRoutes, CustomRouteProps } from "../var/routes";
 
 const App = () => {

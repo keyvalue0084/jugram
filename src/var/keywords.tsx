@@ -10,6 +10,14 @@ export const V_USER_CONTEXT = {
   }
 };
 
+export const V_ARTICLE_CONTEXT = {
+  ACTION: {
+    DELETE: {
+      NAME: "LOGIN"
+    }
+  }
+};
+
 //레이아웃 관련된 키워드
 export const V_LAYOUT_ROUTES = {
   AUTH: {
@@ -36,7 +44,8 @@ export const V_ROUTES = {
   },
   ARTICLE_VIEW: {
     NAME: "articleView",
-    PATH: "/articleView",
+    PATH: "/articleView/:id",
+    URL: "/articleView",
     LAYOUT: "BASIC"
   },
   ARTICLE_REGIST: {

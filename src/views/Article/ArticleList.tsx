@@ -11,8 +11,7 @@ const ArticleList = () => {
 
   useEffect(() => {
     if (userState.jwt) {
-      getArticles(userState.jwt).then(response => {
-        console.log(response.data);
+      getArticles().then(response => {
         setArticles(response.data);
       });
     }

@@ -3,16 +3,23 @@ import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { addArticle } from "../../hooks/Articles";
 import { useUserState } from "../../context/UserContext";
+import { V_ROUTES } from "../../var/keywords";
 
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import ViewListIcon from "@mui/icons-material/ViewList";
+import SaveIcon from "@mui/icons-material/Save";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+
+import Moment from "moment";
 
 const ArticleRegister = () => {
   const [article, setArticle] = useState<Components.Schemas.NewArticle>();
@@ -50,12 +57,47 @@ const ArticleRegister = () => {
 
   return (
     <Box
-      pl={30}
-      pr={30}
-      pt={10}
-      style={{ maxHeight: "80vh", overflow: "auto" }}
+      sx={{
+        display: "flex",
+        justifyContent: "space-evenly",
+        p: 1,
+        m: 1
+      }}
     >
-      <Grid container columnSpacing={{ xs: 1, sm: 2, md: 3 }} marginTop={10}>
+      <Grid
+        container
+        spacing={3}
+        alignItems="center"
+        justifyContent="center"
+        paddingTop={10}
+        sx={{ width: "700px" }}
+      >
+        <Grid item xs={12} textAlign="left">
+          <Typography variant="h4" component="div" gutterBottom>
+            {userState?.user?.username}
+          </Typography>
+        </Grid>
+        <Grid item xs={6} textAlign="left">
+          <Typography variant="body1" gutterBottom>
+            {Moment().format("yyyy.MM.DD")}
+          </Typography>
+        </Grid>
+        <Grid item xs={6} textAlign="right">
+          <IconButton
+            aria-label="delete"
+            size="large"
+            href={V_ROUTES.ARTICLE_LIST.PATH}
+          >
+            <ViewListIcon fontSize="inherit" />
+          </IconButton>
+          <IconButton
+            aria-label="delete"
+            size="large"
+            onClick={handleClickOpen}
+          >
+            <SaveIcon fontSize="inherit" />
+          </IconButton>
+        </Grid>
         <Grid item xs={12}>
           <TextField
             id="outlined-multiline-static"
@@ -67,28 +109,6 @@ const ArticleRegister = () => {
             onChange={onChange}
             defaultValue={article?.content}
           />
-        </Grid>
-        <Grid item xs={9} marginTop={2}>
-          <Button
-            variant="outlined"
-            color="primary"
-            size="large"
-            fullWidth
-            onClick={handleClickOpen}
-          >
-            Regist
-          </Button>
-        </Grid>
-        <Grid item xs={3} marginTop={2}>
-          <Button
-            variant="outlined"
-            color="secondary"
-            href="/"
-            size="large"
-            fullWidth
-          >
-            Cancel
-          </Button>
         </Grid>
       </Grid>
       <Dialog
