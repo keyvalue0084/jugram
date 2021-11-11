@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { useHistory, useParams } from "react-router";
 import { updateArticle, getArticle } from "../../hooks/Articles";
-import { V_ROUTES } from "../../var/keywords";
+import { V_ROUTES, V_BACK_END } from "../../var/keywords";
 import { compare } from "../../hooks/Utils";
 import { useUserState } from "../../context/UserContext";
 
@@ -25,6 +25,10 @@ import SaveIcon from "@mui/icons-material/Save";
 import Moment from "moment";
 import { addFiles } from "../../hooks/Files";
 
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/swiper-bundle.min.css";
+import "swiper/swiper.min.css";
+
 const ArticleView = () => {
   const userState = useUserState();
   const [article, setArticle] = useState<Components.Schemas.Article>();
@@ -32,10 +36,18 @@ const ArticleView = () => {
   const history = useHistory();
   const params = useParams<{ id: string }>();
   const [isWriter, setIsWriter] = useState(false);
+  const [images, setImages] =
+    useState<
+      React.DetailedHTMLProps<
+        React.ImgHTMLAttributes<HTMLImageElement>,
+        HTMLImageElement
+      >[]
+    >();
 
   useEffect(() => {
     getArticle(params.id).then(response => {
       setArticle(response.data);
+      loadImages(response.data);
       if (response.data.user?.id && userState.user?.id) {
         setIsWriter(compare(userState.user.id, response.data.user.id));
       }
@@ -71,6 +83,25 @@ const ArticleView = () => {
     }
   };
 
+  const loadImages = (data: Components.Schemas.Article) => {
+    if (data && data.files) {
+      setImages(
+        data?.files.map((file, key) => {
+          return (
+            <SwiperSlide>
+              {" "}
+              <img
+                height={400}
+                key={key}
+                src={V_BACK_END.BASIC_URL + file.url}
+                alt={file.name}
+              />
+            </SwiperSlide>
+          );
+        })
+      );
+    }
+  };
   return (
     <Box
       sx={{
@@ -130,7 +161,7 @@ const ArticleView = () => {
             label="Contents"
             name="content"
             multiline
-            rows={14}
+            rows={4}
             fullWidth
             focused={true}
             onChange={onChange}
@@ -141,7 +172,15 @@ const ArticleView = () => {
         <Grid item xs={12} marginTop={2}>
           <form>
             <input type="file" name="files" />
+            <input type="text" name="ref" defaultValue="article" />
+            <input type="text" name="refId" defaultValue={article?.id} />
+            <input type="text" name="field" defaultValue="files" />
           </form>
+          <Box height={200}>
+            <Swiper spaceBetween={150} slidesPerView={1}>
+              {images}
+            </Swiper>
+          </Box>
         </Grid>
         <Dialog
           open={open}

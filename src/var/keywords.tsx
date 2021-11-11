@@ -1,3 +1,8 @@
+//BACK END
+export const V_BACK_END = {
+  BASIC_URL: "https://jsbackend.herokuapp.com"
+};
+
 //USER CONTEXT관련된 키워드
 export const V_USER_CONTEXT = {
   ACTION: {
