@@ -70,7 +70,7 @@ const ArticleView = () => {
         setIsWriter(compare(userState.user.id, response.data.user.id));
       }
     });
-  }, [userState]);
+  }, [, userState]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -82,7 +82,30 @@ const ArticleView = () => {
 
   const onFileChangeCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
     /*추후에 다중 파일 업로드 처리?*/
-    console.log(e.target.files);
+    if (e.target.files) {
+      const newFile = e.target.files[0];
+
+      if (files) {
+        setFiles([
+          ...files,
+          <ListItem key={files?.length + "_tmpFile"}>
+            <Grid container>
+              <Grid item xs={9} textAlign="left" display="flex">
+                <ListItemIcon sx={{ paddingTop: "10px" }}>
+                  <CropOriginalIcon />
+                </ListItemIcon>
+                <ListItemText primary={newFile.name} secondary={newFile.type} />
+              </Grid>
+              <Grid item xs={3} textAlign="right">
+                <IconButton aria-label="delete">
+                  <DeleteOutlineIcon fontSize="inherit" />
+                </IconButton>
+              </Grid>
+            </Grid>
+          </ListItem>
+        ]);
+      }
+    }
   };
   const onBtnClick = () => {
     if (inputFileRef.current) {
@@ -112,27 +135,17 @@ const ArticleView = () => {
   };
 
   const deleteFileProcess = (id: string) => {
-    if (files) {
-      console.log(files);
-      const filteredFiles = files.filter(file => {
-        if (file.id === "11") {
-          return file;
-        }
-      });
-      setFiles(filteredFiles);
-      setImages(filteredFiles);
-    }
-    /*
     deleteFile(id).then(response => {
-      if (files) {
-        const filteredFiles = files.filter(file => {
+      if (article?.files) {
+        const filteredFiles = article?.files.filter(file => {
           if (file.id !== id) {
             return file;
           }
         });
         setFiles(filteredFiles);
+        setImages(filteredFiles);
       }
-    });*/
+    });
   };
   const getImageComponents = (data: Components.Schemas.Article) => {
     if (data && data.files) {
@@ -165,6 +178,10 @@ const ArticleView = () => {
     }
   };
 
+  const handleImgError = (e: React.ChangeEvent<HTMLImageElement>) => {
+    e.target.hidden = true;
+  };
+
   const getFileComponents = (data: Components.Schemas.Article) => {
     if (data && data.files) {
       setImages(
@@ -177,6 +194,7 @@ const ArticleView = () => {
                 key={key}
                 src={V_BACK_END.BASIC_URL + file.url}
                 alt={file.name}
+                onError={handleImgError}
               />
             </SwiperSlide>
           );
@@ -276,7 +294,13 @@ const ArticleView = () => {
             }}
             key="scrollbar-key"
           >
-            <List dense={true}>{files}</List>
+            <List dense={true}>
+              {files?.length !== 0 ? (
+                files
+              ) : (
+                <ListItem key={"noFiles"}>No Files</ListItem>
+              )}
+            </List>
           </Scrollbars>
 
           <form>
@@ -292,6 +316,25 @@ const ArticleView = () => {
             <input type="hidden" name="field" defaultValue="files" />
           </form>
         </Grid>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"UPDATE"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Would you like to update?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={registProcess}>Yes</Button>
+            <Button onClick={handleClose} autoFocus>
+              No
+            </Button>
+          </DialogActions>
+        </Dialog>
         <Dialog
           open={open}
           onClose={handleClose}
