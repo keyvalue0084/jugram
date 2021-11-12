@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { useHistory, useParams } from "react-router";
 import { updateArticle, getArticle } from "../../hooks/Articles";
@@ -21,9 +21,18 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import CommentIcon from "@mui/icons-material/Comment";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import SaveIcon from "@mui/icons-material/Save";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import Divider from "@mui/material/Divider";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import CropOriginalIcon from "@mui/icons-material/CropOriginal";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { Scrollbars } from "react-custom-scrollbars-2";
 
 import Moment from "moment";
-import { addFiles } from "../../hooks/Files";
+import { addFiles, deleteFile } from "../../hooks/Files";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.min.css";
@@ -32,7 +41,7 @@ import "swiper/swiper.min.css";
 const ArticleView = () => {
   const userState = useUserState();
   const [article, setArticle] = useState<Components.Schemas.Article>();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const history = useHistory();
   const params = useParams<{ id: string }>();
   const [isWriter, setIsWriter] = useState(false);
@@ -43,11 +52,20 @@ const ArticleView = () => {
         HTMLImageElement
       >[]
     >();
+  const [files, setFiles] =
+    useState<
+      React.DetailedHTMLProps<
+        React.ImgHTMLAttributes<HTMLImageElement>,
+        HTMLImageElement
+      >[]
+    >();
+  const inputFileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     getArticle(params.id).then(response => {
       setArticle(response.data);
-      loadImages(response.data);
+      getImageComponents(response.data);
+      getFileComponents(response.data);
       if (response.data.user?.id && userState.user?.id) {
         setIsWriter(compare(userState.user.id, response.data.user.id));
       }
@@ -60,6 +78,16 @@ const ArticleView = () => {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const onFileChangeCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
+    /*추후에 다중 파일 업로드 처리?*/
+    console.log(e.target.files);
+  };
+  const onBtnClick = () => {
+    if (inputFileRef.current) {
+      inputFileRef.current.click();
+    }
   };
 
   //입력값 state 관리
@@ -83,15 +111,69 @@ const ArticleView = () => {
     }
   };
 
-  const loadImages = (data: Components.Schemas.Article) => {
+  const deleteFileProcess = (id: string) => {
+    if (files) {
+      console.log(files);
+      const filteredFiles = files.filter(file => {
+        if (file.id === "11") {
+          return file;
+        }
+      });
+      setFiles(filteredFiles);
+      setImages(filteredFiles);
+    }
+    /*
+    deleteFile(id).then(response => {
+      if (files) {
+        const filteredFiles = files.filter(file => {
+          if (file.id !== id) {
+            return file;
+          }
+        });
+        setFiles(filteredFiles);
+      }
+    });*/
+  };
+  const getImageComponents = (data: Components.Schemas.Article) => {
+    if (data && data.files) {
+      setFiles(
+        data?.files.map((file, key) => {
+          return (
+            <ListItem key={key}>
+              <Grid container>
+                <Grid item xs={9} textAlign="left" display="flex">
+                  <ListItemIcon sx={{ paddingTop: "10px" }}>
+                    <CropOriginalIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={file.name} secondary={file.mime} />
+                </Grid>
+                <Grid item xs={3} textAlign="right">
+                  <IconButton
+                    aria-label="delete"
+                    onClick={() => {
+                      deleteFileProcess(file.id);
+                    }}
+                  >
+                    <DeleteOutlineIcon fontSize="inherit" />
+                  </IconButton>
+                </Grid>
+              </Grid>
+            </ListItem>
+          );
+        })
+      );
+    }
+  };
+
+  const getFileComponents = (data: Components.Schemas.Article) => {
     if (data && data.files) {
       setImages(
         data?.files.map((file, key) => {
           return (
-            <SwiperSlide>
+            <SwiperSlide key={key}>
               {" "}
               <img
-                height={400}
+                height={300}
                 key={key}
                 src={V_BACK_END.BASIC_URL + file.url}
                 alt={file.name}
@@ -102,6 +184,7 @@ const ArticleView = () => {
       );
     }
   };
+
   return (
     <Box
       sx={{
@@ -130,30 +213,45 @@ const ArticleView = () => {
           </Typography>
         </Grid>
         <Grid item xs={6} textAlign="right">
-          <IconButton aria-label="delete" size="large">
-            <FavoriteIcon fontSize="inherit" />
-          </IconButton>
-          <IconButton aria-label="delete" size="large">
-            <CommentIcon fontSize="inherit" />
-          </IconButton>
-          <IconButton
-            aria-label="delete"
-            size="large"
-            href={V_ROUTES.ARTICLE_LIST.PATH}
-          >
-            <ViewListIcon fontSize="inherit" />
-          </IconButton>
-          {isWriter ? (
-            <IconButton
-              aria-label="delete"
-              size="large"
-              onClick={handleClickOpen}
-            >
-              <SaveIcon fontSize="inherit" />
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <IconButton aria-label="favorite" size="large">
+              <FavoriteIcon fontSize="inherit" />
             </IconButton>
-          ) : (
-            ""
-          )}
+            <IconButton aria-label="comment" size="large">
+              <CommentIcon fontSize="inherit" />
+            </IconButton>
+            <Divider orientation="vertical" variant="middle" flexItem />
+            <IconButton
+              aria-label="list"
+              size="large"
+              href={V_ROUTES.ARTICLE_LIST.PATH}
+            >
+              <ViewListIcon fontSize="inherit" />
+            </IconButton>
+            {isWriter ? (
+              <IconButton
+                aria-label="save"
+                size="large"
+                onClick={handleClickOpen}
+              >
+                <SaveIcon fontSize="inherit" />
+              </IconButton>
+            ) : (
+              ""
+            )}
+            {isWriter ? (
+              <IconButton aria-label="upload" size="large" onClick={onBtnClick}>
+                <UploadFileIcon fontSize="inherit" />
+              </IconButton>
+            ) : (
+              ""
+            )}
+          </Box>
+        </Grid>
+        <Grid item xs={12}>
+          <Swiper spaceBetween={150} slidesPerView={1}>
+            {images}
+          </Swiper>
         </Grid>
         <Grid item xs={12} marginTop={2}>
           <TextField
@@ -161,7 +259,7 @@ const ArticleView = () => {
             label="Contents"
             name="content"
             multiline
-            rows={4}
+            rows={3}
             fullWidth
             focused={true}
             onChange={onChange}
@@ -169,18 +267,30 @@ const ArticleView = () => {
             inputProps={{ readOnly: !isWriter }}
           />
         </Grid>
-        <Grid item xs={12} marginTop={2}>
+        <Grid item xs={12}>
+          <Scrollbars
+            style={{
+              height: "12vh",
+              border: "solid 1px #cccccc",
+              borderRadius: "3px"
+            }}
+            key="scrollbar-key"
+          >
+            <List dense={true}>{files}</List>
+          </Scrollbars>
+
           <form>
-            <input type="file" name="files" />
-            <input type="text" name="ref" defaultValue="article" />
-            <input type="text" name="refId" defaultValue={article?.id} />
-            <input type="text" name="field" defaultValue="files" />
+            <input
+              type="file"
+              name="files"
+              ref={inputFileRef}
+              onChangeCapture={onFileChangeCapture}
+              hidden={true}
+            />
+            <input type="hidden" name="ref" defaultValue="article" />
+            <input type="hidden" name="refId" defaultValue={article?.id} />
+            <input type="hidden" name="field" defaultValue="files" />
           </form>
-          <Box height={200}>
-            <Swiper spaceBetween={150} slidesPerView={1}>
-              {images}
-            </Swiper>
-          </Box>
         </Grid>
         <Dialog
           open={open}
