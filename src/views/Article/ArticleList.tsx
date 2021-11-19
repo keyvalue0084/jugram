@@ -20,7 +20,6 @@ const ArticleList = () => {
       getArticles().then(response => {
         setArticles(response.data);
         setViewArticles(response.data);
-        console.log(response.data);
       });
     }
   }, [userState.jwt]);
@@ -30,7 +29,7 @@ const ArticleList = () => {
       if (keyword) {
         const filteredArticle = articles.filter(article => {
           if (article.content) {
-            if (article.content?.indexOf(keyword) > -1) {
+            if (article.content?.includes(keyword)) {
               return article;
             }
           }

@@ -130,7 +130,7 @@ const ArticleCard = (articleProp: Components.Schemas.Article) => {
             {Moment(articleProp.published_at).format("yyyy.MM.DD")}
           </Typography>
           <Typography variant="body2" color="text.secondary" align="right">
-            {articleProp.user ? articleProp.user.username : ""}
+            {articleProp.user?.username || ""}
           </Typography>
         </CardContent>
         {getControllButton()}

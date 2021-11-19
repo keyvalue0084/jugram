@@ -39,14 +39,7 @@ function SignIn(props: Props) {
       password: "",
       username: "",
       email: "",
-      provider: "email",
-      resetPasswordToken: undefined,
-      confirmationToken: undefined,
-      confirmed: false,
-      blocked: false,
-      role: undefined,
-      created_by: undefined,
-      updated_by: undefined
+      provider: "email"
     });
 
   const doSignIn = () => {

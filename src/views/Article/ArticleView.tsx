@@ -45,21 +45,13 @@ const ArticleView = () => {
   const history = useHistory();
   const params = useParams<{ id: string }>();
   const [isWriter, setIsWriter] = useState(false);
+  type ImageElementType = React.ImgHTMLAttributes<HTMLImageElement>; //반복되는 type은 type alias 로 간략하게 사용
   const [images, setImages] =
-    useState<
-      React.DetailedHTMLProps<
-        React.ImgHTMLAttributes<HTMLImageElement>,
-        HTMLImageElement
-      >[]
-    >();
+    useState<React.DetailedHTMLProps<ImageElementType, HTMLImageElement>[]>();
   const [files, setFiles] =
-    useState<
-      React.DetailedHTMLProps<
-        React.ImgHTMLAttributes<HTMLImageElement>,
-        HTMLImageElement
-      >[]
-    >();
+    useState<React.DetailedHTMLProps<ImageElementType, HTMLImageElement>[]>();
   const inputFileRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     getArticle(params.id).then(response => {
@@ -116,20 +108,29 @@ const ArticleView = () => {
   //입력값 state 관리
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setArticle({
-      ...article,
-      id: params.id,
-      [name]: value
-    });
+    if (params.id) {
+      setArticle({
+        ...article,
+        id: params.id,
+        [name]: value
+      });
+    }
   };
 
   const registProcess = () => {
     if (article) {
       handleClose();
       updateArticle(article).then(response => {
-        addFiles(document.querySelector("form")).then(response => {
-          history.push("/articleList");
-        });
+        //if문 없애고 싶다...
+        if (inputFileRef.current?.files) {
+          if (inputFileRef.current?.files?.length > 0) {
+            addFiles(formRef.current).then(response => {
+              history.push("/articleList");
+            });
+          } else {
+            history.push("/articleList");
+          }
+        }
       });
     }
   };
@@ -303,7 +304,7 @@ const ArticleView = () => {
             </List>
           </Scrollbars>
 
-          <form>
+          <form ref={formRef}>
             <input
               type="file"
               name="files"
