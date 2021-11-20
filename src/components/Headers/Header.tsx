@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useUserState, useUserDispatch } from "../../context/UserContext";
-import { useHistory } from "react-router-dom";
 
 import { V_ROUTES } from "../../var/keywords";
 

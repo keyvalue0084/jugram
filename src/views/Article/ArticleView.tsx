@@ -25,10 +25,6 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import CropOriginalIcon from "@mui/icons-material/CropOriginal";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { Scrollbars } from "react-custom-scrollbars-2";
 
 import Moment from "moment";
@@ -37,32 +33,36 @@ import { addFiles, deleteFile } from "../../hooks/Files";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.min.css";
 import "swiper/swiper.min.css";
+import FileCard from "./FileCard";
 
 const ArticleView = () => {
   const userState = useUserState();
-  const [article, setArticle] = useState<Components.Schemas.Article>();
-  const [open, setOpen] = useState(false);
   const history = useHistory();
   const params = useParams<{ id: string }>();
+
+  const [article, setArticle] = useState<Components.Schemas.Article>();
+  const [open, setOpen] = useState(false);
   const [isWriter, setIsWriter] = useState(false);
-  type ImageElementType = React.ImgHTMLAttributes<HTMLImageElement>; //반복되는 type은 type alias 로 간략하게 사용
-  const [images, setImages] =
-    useState<React.DetailedHTMLProps<ImageElementType, HTMLImageElement>[]>();
-  const [files, setFiles] =
-    useState<React.DetailedHTMLProps<ImageElementType, HTMLImageElement>[]>();
+  const [images, setImages] = useState<DetailedHtmlType[]>();
+
   const inputFileRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+
+  type ImageElementType = React.ImgHTMLAttributes<HTMLImageElement>; //반복되는 type은 type alias 로 간략하게 사용
+  type DetailedHtmlType = React.DetailedHTMLProps<
+    ImageElementType,
+    HTMLImageElement
+  >;
 
   useEffect(() => {
     getArticle(params.id).then(response => {
       setArticle(response.data);
-      getImageComponents(response.data);
       getFileComponents(response.data);
       if (response.data.user?.id && userState.user?.id) {
         setIsWriter(compare(userState.user.id, response.data.user.id));
       }
     });
-  }, [, userState]);
+  }, [, userState, article]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -76,27 +76,6 @@ const ArticleView = () => {
     /*추후에 다중 파일 업로드 처리?*/
     if (e.target.files) {
       const newFile = e.target.files[0];
-
-      if (files) {
-        setFiles([
-          ...files,
-          <ListItem key={files?.length + "_tmpFile"}>
-            <Grid container>
-              <Grid item xs={9} textAlign="left" display="flex">
-                <ListItemIcon sx={{ paddingTop: "10px" }}>
-                  <CropOriginalIcon />
-                </ListItemIcon>
-                <ListItemText primary={newFile.name} secondary={newFile.type} />
-              </Grid>
-              <Grid item xs={3} textAlign="right">
-                <IconButton aria-label="delete">
-                  <DeleteOutlineIcon fontSize="inherit" />
-                </IconButton>
-              </Grid>
-            </Grid>
-          </ListItem>
-        ]);
-      }
     }
   };
   const onBtnClick = () => {
@@ -121,15 +100,12 @@ const ArticleView = () => {
     if (article) {
       handleClose();
       updateArticle(article).then(response => {
-        //if문 없애고 싶다...
-        if (inputFileRef.current?.files) {
-          if (inputFileRef.current?.files?.length > 0) {
-            addFiles(formRef.current).then(response => {
-              history.push("/articleList");
-            });
-          } else {
+        if (inputFileRef.current?.files?.length) {
+          addFiles(formRef.current).then(response => {
             history.push("/articleList");
-          }
+          });
+        } else {
+          history.push("/articleList");
         }
       });
     }
@@ -143,40 +119,9 @@ const ArticleView = () => {
             return file;
           }
         });
-        setFiles(filteredFiles);
         setImages(filteredFiles);
       }
     });
-  };
-  const getImageComponents = (data: Components.Schemas.Article) => {
-    if (data && data.files) {
-      setFiles(
-        data?.files.map((file, key) => {
-          return (
-            <ListItem key={key}>
-              <Grid container>
-                <Grid item xs={9} textAlign="left" display="flex">
-                  <ListItemIcon sx={{ paddingTop: "10px" }}>
-                    <CropOriginalIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={file.name} secondary={file.mime} />
-                </Grid>
-                <Grid item xs={3} textAlign="right">
-                  <IconButton
-                    aria-label="delete"
-                    onClick={() => {
-                      deleteFileProcess(file.id);
-                    }}
-                  >
-                    <DeleteOutlineIcon fontSize="inherit" />
-                  </IconButton>
-                </Grid>
-              </Grid>
-            </ListItem>
-          );
-        })
-      );
-    }
   };
 
   const handleImgError = (e: React.ChangeEvent<HTMLImageElement>) => {
@@ -296,8 +241,10 @@ const ArticleView = () => {
             key="scrollbar-key"
           >
             <List dense={true}>
-              {files?.length !== 0 ? (
-                files
+              {article?.files?.length ? (
+                article?.files.map((file, key) => {
+                  return <FileCard {...file} />;
+                })
               ) : (
                 <ListItem key={"noFiles"}>No Files</ListItem>
               )}
