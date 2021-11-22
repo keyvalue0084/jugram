@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 import { useHistory, useParams } from "react-router";
 import { updateArticle, getArticle } from "../../hooks/Articles";
-import { V_ROUTES, V_BACK_END } from "../../var/keywords";
+import { V_ROUTES } from "../../var/keywords";
 import { compare } from "../../hooks/Utils";
 import { useUserState } from "../../context/UserContext";
 
@@ -43,44 +43,27 @@ const ArticleView = () => {
   const [article, setArticle] = useState<Components.Schemas.Article>();
   const [open, setOpen] = useState(false);
   const [isWriter, setIsWriter] = useState(false);
-  const [images, setImages] = useState<DetailedHtmlType[]>();
 
   const inputFileRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
-  type ImageElementType = React.ImgHTMLAttributes<HTMLImageElement>; //반복되는 type은 type alias 로 간략하게 사용
-  type DetailedHtmlType = React.DetailedHTMLProps<
-    ImageElementType,
-    HTMLImageElement
-  >;
-
   useEffect(() => {
     getArticle(params.id).then(response => {
       setArticle(response.data);
-      getFileComponents(response.data);
       if (response.data.user?.id && userState.user?.id) {
         setIsWriter(compare(userState.user.id, response.data.user.id));
       }
     });
-  }, [, userState, article]);
+  }, [, userState]);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
+  const toggleDialog = () => {
+    setOpen(!open);
   };
 
   const onFileChangeCapture = (e: React.ChangeEvent<HTMLInputElement>) => {
     /*추후에 다중 파일 업로드 처리?*/
     if (e.target.files) {
       const newFile = e.target.files[0];
-    }
-  };
-  const onBtnClick = () => {
-    if (inputFileRef.current) {
-      inputFileRef.current.click();
     }
   };
 
@@ -98,7 +81,7 @@ const ArticleView = () => {
 
   const registProcess = () => {
     if (article) {
-      handleClose();
+      toggleDialog();
       updateArticle(article).then(response => {
         if (inputFileRef.current?.files?.length) {
           addFiles(formRef.current).then(response => {
@@ -119,34 +102,9 @@ const ArticleView = () => {
             return file;
           }
         });
-        setImages(filteredFiles);
+        setArticle({ ...article, files: filteredFiles });
       }
     });
-  };
-
-  const handleImgError = (e: React.ChangeEvent<HTMLImageElement>) => {
-    e.target.hidden = true;
-  };
-
-  const getFileComponents = (data: Components.Schemas.Article) => {
-    if (data && data.files) {
-      setImages(
-        data?.files.map((file, key) => {
-          return (
-            <SwiperSlide key={key}>
-              {" "}
-              <img
-                height={300}
-                key={key}
-                src={V_BACK_END.BASIC_URL + file.url}
-                alt={file.name}
-                onError={handleImgError}
-              />
-            </SwiperSlide>
-          );
-        })
-      );
-    }
   };
 
   return (
@@ -193,18 +151,20 @@ const ArticleView = () => {
               <ViewListIcon fontSize="inherit" />
             </IconButton>
             {isWriter ? (
-              <IconButton
-                aria-label="save"
-                size="large"
-                onClick={handleClickOpen}
-              >
+              <IconButton aria-label="save" size="large" onClick={toggleDialog}>
                 <SaveIcon fontSize="inherit" />
               </IconButton>
             ) : (
               ""
             )}
             {isWriter ? (
-              <IconButton aria-label="upload" size="large" onClick={onBtnClick}>
+              <IconButton
+                aria-label="upload"
+                size="large"
+                onClick={() => {
+                  inputFileRef?.current?.click();
+                }}
+              >
                 <UploadFileIcon fontSize="inherit" />
               </IconButton>
             ) : (
@@ -214,7 +174,24 @@ const ArticleView = () => {
         </Grid>
         <Grid item xs={12}>
           <Swiper spaceBetween={150} slidesPerView={1}>
-            {images}
+            {article?.files
+              ? article?.files.map((file, key) => {
+                  return (
+                    <SwiperSlide key={key}>
+                      {" "}
+                      <img
+                        height={300}
+                        key={key}
+                        src={file.url}
+                        alt={file.name}
+                        onError={(e: React.ChangeEvent<HTMLImageElement>) => {
+                          e.target.hidden = true;
+                        }}
+                      />
+                    </SwiperSlide>
+                  );
+                })
+              : ""}
           </Swiper>
         </Grid>
         <Grid item xs={12} marginTop={2}>
@@ -243,7 +220,9 @@ const ArticleView = () => {
             <List dense={true}>
               {article?.files?.length ? (
                 article?.files.map((file, key) => {
-                  return <FileCard {...file} />;
+                  return (
+                    <FileCard {...file} onClick={deleteFileProcess} key={key} />
+                  );
                 })
               ) : (
                 <ListItem key={"noFiles"}>No Files</ListItem>
@@ -266,7 +245,7 @@ const ArticleView = () => {
         </Grid>
         <Dialog
           open={open}
-          onClose={handleClose}
+          onClose={toggleDialog}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -278,26 +257,7 @@ const ArticleView = () => {
           </DialogContent>
           <DialogActions>
             <Button onClick={registProcess}>Yes</Button>
-            <Button onClick={handleClose} autoFocus>
-              No
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{"UPDATE"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Would you like to update?
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={registProcess}>Yes</Button>
-            <Button onClick={handleClose} autoFocus>
+            <Button onClick={toggleDialog} autoFocus>
               No
             </Button>
           </DialogActions>

@@ -19,9 +19,10 @@ interface FileType {
   size: number;
   url: string;
   provider: string;
+  onClick: Function;
 }
 
-const FileCard = (file: FileType, action: Function) => {
+const FileCard = (file: FileType) => {
   return (
     <ListItem key={file.id}>
       <Grid container>
@@ -36,6 +37,7 @@ const FileCard = (file: FileType, action: Function) => {
             aria-label="delete"
             onClick={() => {
               //deleteFileProcess(file.id);
+              file.onClick(file.id);
             }}
           >
             <DeleteOutlineIcon fontSize="inherit" />
