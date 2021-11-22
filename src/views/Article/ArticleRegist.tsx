@@ -28,12 +28,8 @@ const ArticleRegister = () => {
 
   const history = useHistory();
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
+  const toggleDialog = () => {
+    setOpen(!open);
   };
 
   //입력값 state 관리
@@ -47,7 +43,7 @@ const ArticleRegister = () => {
 
   const registProcess = () => {
     if (article) {
-      handleClose();
+      toggleDialog();
       article.user = userState.user?.id;
       addArticle(article).then(response => {
         history.push("/articleList");
@@ -90,11 +86,7 @@ const ArticleRegister = () => {
           >
             <ViewListIcon fontSize="inherit" />
           </IconButton>
-          <IconButton
-            aria-label="delete"
-            size="large"
-            onClick={handleClickOpen}
-          >
+          <IconButton aria-label="delete" size="large" onClick={toggleDialog}>
             <SaveIcon fontSize="inherit" />
           </IconButton>
         </Grid>
@@ -113,7 +105,7 @@ const ArticleRegister = () => {
       </Grid>
       <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={toggleDialog}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -125,7 +117,7 @@ const ArticleRegister = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={registProcess}>Yes</Button>
-          <Button onClick={handleClose} autoFocus>
+          <Button onClick={toggleDialog} autoFocus>
             No
           </Button>
         </DialogActions>

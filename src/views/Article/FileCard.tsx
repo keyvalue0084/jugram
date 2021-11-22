@@ -1,7 +1,5 @@
 import React from "react";
 
-import { deleteFile } from "../../hooks/Files";
-
 import {
   ListItem,
   ListItemIcon,
@@ -36,7 +34,6 @@ const FileCard = (file: FileType) => {
           <IconButton
             aria-label="delete"
             onClick={() => {
-              //deleteFileProcess(file.id);
               file.onClick(file.id);
             }}
           >
