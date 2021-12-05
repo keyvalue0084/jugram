@@ -12,7 +12,7 @@ import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
 
 import { createStyles, withStyles, WithStyles } from "@mui/styles";
-import { addUser, NewUser } from "../hooks/Users";
+import { addUser } from "../hooks/Users";
 
 interface Valid {
   passwordConfirm?: string;
@@ -37,22 +37,23 @@ function SignUp(props: Props) {
     passwordOk: true
   });
 
-  const [newUser, setUser] = useState<NewUser>({
-    password: undefined,
-    username: "",
-    email: "",
-    provider: undefined,
-    resetPasswordToken: undefined,
-    confirmationToken: undefined,
-    confirmed: false,
-    blocked: false,
-    role: undefined,
-    created_by: undefined,
-    updated_by: undefined
-  });
+  const [newUser, setUser] =
+    useState<Components.Schemas.NewUsersPermissionsUser>({
+      password: undefined,
+      username: "",
+      email: "",
+      provider: undefined,
+      resetPasswordToken: undefined,
+      confirmationToken: undefined,
+      confirmed: false,
+      blocked: false,
+      role: undefined,
+      created_by: undefined,
+      updated_by: undefined
+    });
 
   const doSignUp = () => {
-    if (checkValidation()) {
+    if (signUpProcess()) {
       addUser(newUser).then(response => {
         toast.success("회원가입 성공!", {
           position: toast.POSITION.TOP_CENTER,
@@ -77,19 +78,15 @@ function SignUp(props: Props) {
     });
   };
 
-  const showInvalidMessage = (msg: string) => {
-    toast.error(msg, {
-      position: toast.POSITION.TOP_CENTER,
-      autoClose: 2000
-    });
-  };
-
   //유효성 체크
-  const checkValidation = () => {
+  const signUpProcess = () => {
     const valid = comparePassword();
     tooglePasswordValidation(valid);
     if (!valid) {
-      showInvalidMessage("Check Your Password");
+      toast.error("Check Your Password", {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 2000
+      });
     }
 
     return valid;

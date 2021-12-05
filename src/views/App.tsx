@@ -20,10 +20,12 @@ const App = () => {
     }
   }, []);
 
-  const getRoutes = (routes: Array<CustomRouteProps>) => {
+  const getRoutes = (routes: CustomRouteProps[]) => {
     return routes.map((prop, key) => {
       if (prop.show === true) {
-        return <Route path={prop.path} component={prop.component}></Route>;
+        return (
+          <Route path={prop.path} component={prop.component} key={key}></Route>
+        );
       } else {
         return null;
       }

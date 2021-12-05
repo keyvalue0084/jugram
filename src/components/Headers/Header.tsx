@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import { useUserState, useUserDispatch } from "../../context/UserContext";
-import { useHistory } from "react-router-dom";
 
 import { V_ROUTES } from "../../var/keywords";
 
@@ -15,11 +14,24 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import SendIcon from "@mui/icons-material/Send";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { deepOrange } from "@mui/material/colors";
-import { toast, ToastContainer } from "react-toastify";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import PersonIcon from "@mui/icons-material/Person";
+import LogoutIcon from "@mui/icons-material/Logout";
+
 const Header = () => {
   const userState = useUserState();
   const userDispatch = useUserDispatch();
-  const history = useHistory();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   let initialName = userState.user
     ? userState.user.username.substring(0, 1)
@@ -28,9 +40,12 @@ const Header = () => {
   return (
     <Box
       position="fixed"
-      sx={{ border: "1px dashed grey", background: "white", width: "98vw" }}
+      sx={{
+        border: "1px dashed grey",
+        background: "white",
+        width: "98vw"
+      }}
     >
-      <ToastContainer />
       <Toolbar variant="dense">
         <IconButton edge="start" aria-label="menu" sx={{ mr: 2 }}>
           <MenuIcon />
@@ -38,9 +53,19 @@ const Header = () => {
         <Typography variant="h6" component="div" style={{ flex: 1 }}>
           Jugram
         </Typography>
-        <IconButton edge="end" aria-label="add" sx={{ mr: 1 }}>
-          <AddBoxIcon />
-        </IconButton>
+        {userState.jwt ? (
+          <IconButton
+            edge="end"
+            aria-label="AccountBox"
+            sx={{ mr: 1 }}
+            href={V_ROUTES.ARTICLE_REGIST.PATH}
+          >
+            <AddBoxIcon />
+          </IconButton>
+        ) : (
+          <div></div>
+        )}
+
         <IconButton edge="end" aria-label="favorite" sx={{ mr: 1 }}>
           <FavoriteIcon />
         </IconButton>
@@ -49,27 +74,48 @@ const Header = () => {
         </IconButton>
 
         {userState.jwt ? (
-          <IconButton
-            edge="end"
-            aria-label="AccountBox"
-            onClick={() => {
-              userDispatch({
-                type: "LOGOUT"
-              });
-
-              toast.success("로그아웃!", {
-                position: toast.POSITION.TOP_CENTER,
-                autoClose: 1500,
-                onClose: () => {
-                  history.push("/");
-                }
-              });
-            }}
-          >
-            <Avatar sx={{ bgcolor: deepOrange[500], height: 32, width: 32 }}>
-              {initialName}
-            </Avatar>
-          </IconButton>
+          <div>
+            <IconButton
+              edge="end"
+              aria-label="AccountBox"
+              aria-controls="basic-menu"
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+              onClick={handleClick}
+            >
+              <Avatar sx={{ bgcolor: deepOrange[500], height: 32, width: 32 }}>
+                {initialName}
+              </Avatar>
+            </IconButton>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                "aria-labelledby": "basic-button"
+              }}
+            >
+              <MenuItem onClick={handleClose}>
+                <ListItemIcon>
+                  <PersonIcon fontSize="small" />
+                </ListItemIcon>
+                Profile
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  userDispatch({
+                    type: "LOGOUT"
+                  });
+                }}
+              >
+                <ListItemIcon>
+                  <LogoutIcon fontSize="small" />
+                </ListItemIcon>
+                Logout
+              </MenuItem>
+            </Menu>
+          </div>
         ) : (
           <IconButton
             edge="end"

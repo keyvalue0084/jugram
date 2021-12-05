@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 
 import { useUserDispatch } from "../context/UserContext";
 import PropTypes from "prop-types";
-import { V_ROUTES, V_USER_CONTEXT } from "../var/keywords";
+import { V_ROUTES } from "../var/keywords";
 
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -14,8 +14,8 @@ import Button from "@mui/material/Button";
 import GoogleIcon from "@mui/icons-material/Google";
 
 import { createStyles, withStyles, WithStyles } from "@mui/styles";
-import { login, NewUser } from "../hooks/Users";
-import { toast, ToastContainer } from "react-toastify";
+import { login } from "../hooks/Users";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const styles = createStyles({
@@ -34,19 +34,13 @@ function SignIn(props: Props) {
 
   const userDispatch = useUserDispatch();
 
-  const [newUser, setUser] = useState<NewUser>({
-    password: "",
-    username: "",
-    email: "",
-    provider: "email",
-    resetPasswordToken: undefined,
-    confirmationToken: undefined,
-    confirmed: false,
-    blocked: false,
-    role: undefined,
-    created_by: undefined,
-    updated_by: undefined
-  });
+  const [newUser, setUser] =
+    useState<Components.Schemas.NewUsersPermissionsUser>({
+      password: "",
+      username: "",
+      email: "",
+      provider: "email"
+    });
 
   const doSignIn = () => {
     login(newUser).then(response => {

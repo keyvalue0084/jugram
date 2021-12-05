@@ -2,19 +2,24 @@ import React, { useReducer, useContext, createContext, Dispatch } from "react";
 import { V_USER_CONTEXT } from "../var/keywords";
 import { toast, ToastContainer } from "react-toastify";
 
-// 필요한 타입들을 미리 선언
-type UserState = Components.Schemas.NewUsersPermissionsUser;
-
 // 상태를 위한 타입
 interface State {
   jwt?: string;
-  user?: UserState;
+  user?: Components.Schemas.UsersPermissionsUser;
 }
 
 // 모든 액션들을 위한 타입
 type Action =
-  | { type: "LOGIN"; user: UserState; jwt: string }
-  | { type: "LOGOUT"; user?: UserState; jwt?: string };
+  | {
+      type: "LOGIN";
+      user: Components.Schemas.UsersPermissionsUser;
+      jwt: string;
+    }
+  | {
+      type: "LOGOUT";
+      user?: Components.Schemas.UsersPermissionsUser;
+      jwt?: string;
+    };
 
 type UserDispatch = Dispatch<Action>;
 
@@ -54,12 +59,8 @@ function reducer(state: State, action: Action): State {
       position: toast.POSITION.TOP_CENTER,
       autoClose: 1500
     });
-  } finally {
-    return {
-      jwt: undefined,
-      user: undefined
-    };
   }
+  return {};
 }
 
 export function UserProvider({ children }: { children: React.ReactNode }) {

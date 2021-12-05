@@ -10,10 +10,12 @@ import GoogleAuthCallback from "../sns/GoogleAuthCallback";
 import routes, { CustomRouteProps } from "../var/routes";
 
 const AuthLayout = () => {
-  const getRoutes = (routes: Array<CustomRouteProps>) => {
+  const getRoutes = (routes: CustomRouteProps[]) => {
     return routes.map((prop, key) => {
       if (prop.layout === "AUTH") {
-        return <Route path={prop.path} component={prop.component}></Route>;
+        return (
+          <Route path={prop.path} component={prop.component} key={key}></Route>
+        );
       } else {
         return null;
       }

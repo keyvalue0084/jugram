@@ -6,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 
 import MenuIcon from "@mui/icons-material/Menu";
 
-const EntryHeader = () => {
+const AuthHeader = () => {
   return (
     <Box
       position="fixed"
@@ -24,4 +24,4 @@ const EntryHeader = () => {
   );
 };
 
-export default EntryHeader;
+export default AuthHeader;

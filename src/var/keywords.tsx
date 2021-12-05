@@ -1,3 +1,8 @@
+//BACK END
+export const V_BACK_END = {
+  BASIC_URL: "https://jsbackend.herokuapp.com"
+};
+
 //USER CONTEXT관련된 키워드
 export const V_USER_CONTEXT = {
   ACTION: {
@@ -6,6 +11,14 @@ export const V_USER_CONTEXT = {
     },
     LOGOUT: {
       NAME: "LOGOUT"
+    }
+  }
+};
+
+export const V_ARTICLE_CONTEXT = {
+  ACTION: {
+    DELETE: {
+      NAME: "LOGIN"
     }
   }
 };
@@ -36,7 +49,13 @@ export const V_ROUTES = {
   },
   ARTICLE_VIEW: {
     NAME: "articleView",
-    PATH: "/articleView",
+    PATH: "/articleView/:id",
+    URL: "/articleView",
+    LAYOUT: "BASIC"
+  },
+  ARTICLE_REGIST: {
+    NAME: "articleRegist",
+    PATH: "/articleRegist",
     LAYOUT: "BASIC"
   },
   AUTH: {
